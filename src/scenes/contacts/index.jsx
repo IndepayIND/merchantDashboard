@@ -1,13 +1,23 @@
+import React, { useState, useEffect } from 'react';
 import { Box } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { mockDataContacts } from "../../data/mockData";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
+import { fetchContacts } from './GetTxnsApi';
 
 const Contacts = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [contacts, setContacts] = useState([]);
+  useEffect(() => {
+    const fetchContactsData = async () => {
+      const data = await fetchContacts();
+      setContacts(data);
+    };
+    fetchContactsData();
+  }, []);
 
   const columns = [
     { field: "id", headerName: "ID", flex: 0.5 },
@@ -91,7 +101,7 @@ const Contacts = () => {
         }}
       >
         <DataGrid
-          rows={mockDataContacts}
+          rows={contacts}
           columns={columns}
           components={{ Toolbar: GridToolbar }}
         />
