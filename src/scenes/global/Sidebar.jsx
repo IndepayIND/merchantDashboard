@@ -4,18 +4,18 @@ import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
+// import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+// import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
-import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
-import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
-import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
+// import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
+// import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
+// import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
+// import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
+// import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
+// import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
+// import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
+// import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -92,13 +92,13 @@ const Sidebar = () => {
           {!isCollapsed && (
             <Box mb="25px">
               <Box display="flex" justifyContent="center" alignItems="center">
-                <img
-                  alt="profile-user"
-                  width="100px"
-                  height="100px"
-                  src={`../../assets/user.png`}
-                  style={{ cursor: "pointer", borderRadius: "50%" }}
-                />
+                {/*<img*/}
+                {/*  alt="profile-user"*/}
+                {/*  width="100px"*/}
+                {/*  height="100px"*/}
+                {/*  src={`../../assets/user.png`}*/}
+                {/*  style={{ cursor: "pointer", borderRadius: "50%" }}*/}
+                {/*/>*/}
               </Box>
               <Box textAlign="center">
                 <Typography
@@ -117,7 +117,7 @@ const Sidebar = () => {
           )}
 
           <Box paddingLeft={isCollapsed ? undefined : "10%"}>
-            <Item
+          {/*  <Item
               title="Dashboard"
               to="/"
               icon={<HomeOutlinedIcon />}
@@ -138,15 +138,15 @@ const Sidebar = () => {
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+            />*/}
             <Item
-              title="Contacts Information"
-              to="/contacts"
+              title="Dashboard"
+              to="/"
               icon={<ContactsOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
+{/*            <Item
               title="Invoices Balances"
               to="/invoices"
               icon={<ReceiptOutlinedIcon />}
@@ -217,7 +217,7 @@ const Sidebar = () => {
               icon={<MapOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+            />*/}
           </Box>
         </Menu>
       </ProSidebar>

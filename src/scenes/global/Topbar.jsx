@@ -1,19 +1,49 @@
 import { Box, IconButton, useTheme } from "@mui/material";
-import { useContext } from "react";
+import { useState, useContext, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import { ColorModeContext, tokens } from "../../theme";
 import InputBase from "@mui/material/InputBase";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
+import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
 import SearchIcon from "@mui/icons-material/Search";
 
 const Topbar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+  const handleLoginClick = () => {
+    if (isLoggedIn) {
+      deleteAllCookies();
+      sessionStorage.removeItem("isLoggedIn"); // Remove logged-in state from session storage
+      setIsLoggedIn(false); // Update the state immediately
+    }
+    navigate("/login"); // Navigate to the login page
+  };
 
+  function deleteAllCookies() {
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i];
+      const eqPos = cookie.indexOf("=");
+      const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+      document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+    }
+  }
+// Check for logged-in state on page load
+  useEffect(() => {
+    const storedLoggedInState = sessionStorage.getItem("isLoggedIn");
+    if (storedLoggedInState === "true") {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
   return (
     <Box display="flex" justifyContent="space-between" p={2}>
       {/* SEARCH BAR */}
@@ -43,8 +73,12 @@ const Topbar = () => {
         <IconButton>
           <SettingsOutlinedIcon />
         </IconButton>
-        <IconButton>
-          <PersonOutlinedIcon />
+        <IconButton onClick={() => handleLoginClick()}>
+          {isLoggedIn ? (
+              <LogoutIcon />
+          ) : (
+              <LoginIcon />
+          )}
         </IconButton>
       </Box>
     </Box>
