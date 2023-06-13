@@ -5,14 +5,13 @@ FROM node:alpine AS builder
 ENV NODE_ENV production
 #ENV TZ=Europe/Minsk
 #RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-RUN apt-get update
 
 # Setting up the work directory
 WORKDIR /app
 
 # Installing dependencies
 COPY ./package.json ./
-RUN npm install
+RUN npm install --force
 
 # Copying all the files in our project
 COPY . .
