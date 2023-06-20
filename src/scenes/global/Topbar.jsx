@@ -10,6 +10,7 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SearchIcon from "@mui/icons-material/Search";
+import Cookies from "js-cookie";
 
 const Topbar = () => {
   const theme = useTheme();
@@ -18,7 +19,7 @@ const Topbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const handleLoginClick = () => {
-    if (isLoggedIn) {
+    if (Cookies.get("accessToken")) {
       deleteAllCookies();
       sessionStorage.removeItem("isLoggedIn"); // Remove logged-in state from session storage
       setIsLoggedIn(false); // Update the state immediately
@@ -52,10 +53,6 @@ const Topbar = () => {
         backgroundColor={colors.primary[400]}
         borderRadius="3px"
       >
-        <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search" />
-        <IconButton type="button" sx={{ p: 1 }}>
-          <SearchIcon />
-        </IconButton>
       </Box>
 
       {/* ICONS */}

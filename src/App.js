@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom"; // Import the Navigate component
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
 // import Team from "./scenes/team";
 // import Invoices from "./scenes/invoices";
-import PaymentTable from "./scenes/paymentTable";
+import Transactions from "./scenes/transactions";
 import Login from "./scenes/login";
 import Logout from "./scenes/logout";
 // import Bar from "./scenes/bar";
@@ -17,25 +17,35 @@ import Logout from "./scenes/logout";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 // import Calendar from "./scenes/calendar/calendar";
+import Cookies from "js-cookie";
 
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const accessToken = Cookies.get("accessToken");
+    if (!accessToken) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <div className="app">
-          <Sidebar isSidebar={isSidebar} />
+          {Cookies.get("accessToken") ? <Sidebar /> : null} {/* Conditionally render the Sidebar component */}
           <main className="content">
             <Topbar setIsSidebar={setIsSidebar} />
             <Routes>
-              <Route path="/test" element={<Dashboard />} />
+              <Route path="/" element={<Dashboard />} />
               {/*<Route path="/team" element={<Team />} />*/}
-              <Route path="/" element={<PaymentTable />} />
+              <Route path="/transactions" element={<Transactions />} />
               <Route path="/login" element={<Login />} />
               <Route path="/logout" element={<Logout />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
               {/*<Route path="/invoices" element={<Invoices />} />*/}
               {/*<Route path="/form" element={<Form />} />*/}
               {/*<Route path="/bar" element={<Bar />} />*/}
