@@ -3,20 +3,17 @@ import { Routes, Route, Navigate, useNavigate } from "react-router-dom"; // Impo
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
-// import Team from "./scenes/team";
-// import Invoices from "./scenes/invoices";
 import Transactions from "./scenes/transactions";
+import VirtualAccount from "./scenes/transactions/virtualAccount";
+import EWallet from "./scenes/transactions/ewallet";
+import QRIS from "./scenes/transactions/qris";
+import Netbanking from "./scenes/transactions/netbanking";
+import DirectDebit from "./scenes/transactions/directDebit";
+import CreditCard from "./scenes/transactions/creditcard";
 import Login from "./scenes/login";
 import Logout from "./scenes/logout";
-// import Bar from "./scenes/bar";
-// import Form from "./scenes/form";
-// import Line from "./scenes/line";
-// import Pie from "./scenes/pie";
-// import FAQ from "./scenes/faq";
-// import Geography from "./scenes/geography";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
-// import Calendar from "./scenes/calendar/calendar";
 import Cookies from "js-cookie";
 
 function App() {
@@ -43,6 +40,12 @@ function App() {
               <Route path="/" element={<Dashboard />} />
               {/*<Route path="/team" element={<Team />} />*/}
               <Route path="/transactions" element={<Transactions />} />
+              <Route path="/transactions/virtual-account" element={<VirtualAccount />} />
+              <Route path="/transactions/e-wallet" element={<EWallet />} />
+              <Route path="/transactions/qris" element={<QRIS />} />
+              <Route path="/transactions/netbanking" element={<Netbanking />} />
+              <Route path="/transactions/direct-debit" element={<DirectDebit />} />
+              <Route path="/transactions/credit-card" element={<CreditCard />} />
               <Route path="/login" element={<Login />} />
               <Route path="/logout" element={<Logout />} />
               <Route path="*" element={<Navigate to="/" replace />} />

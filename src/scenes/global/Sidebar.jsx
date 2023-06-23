@@ -12,8 +12,10 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import QrCode2Icon from '@mui/icons-material/QrCode2';
 import WalletIcon from '@mui/icons-material/Wallet';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import LanguageIcon from '@mui/icons-material/Language';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import AppsIcon from '@mui/icons-material/Apps';
+import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -42,7 +44,7 @@ const Sidebar = () => {
   return (
     <Box
       sx={{
-          height : "125vh",
+          height : "110vh",
         "& .pro-sidebar-inner": {
           background: `${colors.primary[400]} !important`,
         },
@@ -78,6 +80,9 @@ const Sidebar = () => {
                 alignItems="center"
                 ml="15px"
               >
+                  <PointOfSaleIcon
+                      sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                  />
                 <Typography variant="h3" color={colors.grey[100]}>
                   Tara|Indepay
                 </Typography>
@@ -144,7 +149,6 @@ const Sidebar = () => {
                       selected={selected}
                       setSelected={setSelected}
                   />
-                  //TODO netbanking and qris
                   <Item
                       title="E Wallet"
                       to="/transactions/e-wallet"
@@ -153,9 +157,23 @@ const Sidebar = () => {
                       setSelected={setSelected}
                   />
                   <Item
+                      title="QRIS"
+                      to="/transactions/qris"
+                      icon={<QrCode2Icon />}
+                      selected={selected}
+                      setSelected={setSelected}
+                  />
+                  <Item
                       title="Direct Debit"
                       to="/transactions/direct-debit"
                       icon={<AccountBalanceIcon/>}
+                      selected={selected}
+                      setSelected={setSelected}
+                  />
+                  <Item
+                      title="Net Banking"
+                      to="/transactions/netbanking"
+                      icon={<LanguageIcon/>}
                       selected={selected}
                       setSelected={setSelected}
                   />

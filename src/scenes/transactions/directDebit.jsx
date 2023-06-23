@@ -1,7 +1,7 @@
 import Transactions from "./transactions";
 
 const PaymentTable = () => {
-    return Transactions('');
+    return Transactions('indepayFastCheckOut');
 };
 
 export default PaymentTable;
