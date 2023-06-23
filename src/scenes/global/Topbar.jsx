@@ -2,14 +2,10 @@ import { Box, IconButton, useTheme } from "@mui/material";
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { ColorModeContext, tokens } from "../../theme";
-import InputBase from "@mui/material/InputBase";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
-import SearchIcon from "@mui/icons-material/Search";
 import Cookies from "js-cookie";
 import {deleteAllCookies} from "../../data/api";
 
@@ -55,12 +51,6 @@ const Topbar = () => {
           ) : (
             <LightModeOutlinedIcon />
           )}
-        </IconButton>
-        <IconButton>
-          <NotificationsOutlinedIcon />
-        </IconButton>
-        <IconButton>
-          <SettingsOutlinedIcon />
         </IconButton>
         <IconButton onClick={() => handleLoginClick()}>
           {isLoggedIn ? (

@@ -11,7 +11,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import StatBox from "../../components/StatBox";
-import EmailIcon from "@mui/icons-material/Email";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 
 export const columns = [
@@ -71,7 +70,8 @@ const Transactions = (paymentMethodCategory) => {
             const data = await fetchTransactionDataAPI(fromDate, toDate, selectedOption, searchText, paymentMethodCategory, '', navigate);
             if (data) {
                 setTransactionData(data.payments);
-                setTotalAmount(data.totalAmount ? data.totalAmount.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }) : 0);
+                setTotalAmount(data.totalAmount ? data.totalAmount
+                    .toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0}) : 0);
                 setTotalCount(data.successCount);
             }
         } catch (error) {
@@ -107,9 +107,6 @@ const Transactions = (paymentMethodCategory) => {
         setFromDate('');
         setToDate('');
         fetchTransactionData(navigate);
-        if (searchText.trim() !== "" && selectedOption.trim() !== "") {
-            setSearchText("");
-        }
     };
 
     const handleSearchKeyPress = (e) => {
@@ -138,11 +135,6 @@ const Transactions = (paymentMethodCategory) => {
                     <StatBox
                         title={totalAmount}
                         subtitle="Total Success Amount"
-                        icon={
-                            <PointOfSaleIcon
-                                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-                            />
-                        }
                     />
                 </Box>
                 <Box
@@ -155,11 +147,6 @@ const Transactions = (paymentMethodCategory) => {
                     <StatBox
                         title={totalCount}
                         subtitle="Total Count"
-                        icon={
-                            <PointOfSaleIcon
-                                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-                            />
-                        }
                     />
                 </Box>
             </Box>

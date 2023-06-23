@@ -7,7 +7,6 @@ import { tokens } from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PaymentsIcon from '@mui/icons-material/Payments';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import QrCode2Icon from '@mui/icons-material/QrCode2';
 import WalletIcon from '@mui/icons-material/Wallet';
@@ -15,7 +14,7 @@ import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import LanguageIcon from '@mui/icons-material/Language';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import AppsIcon from '@mui/icons-material/Apps';
-import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
+import logo from '../../components/logo512.png';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -80,10 +79,12 @@ const Sidebar = () => {
                 alignItems="center"
                 ml="15px"
               >
-                  <PointOfSaleIcon
-                      sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                  <img
+                      src={logo}
+                      alt="Point of Sale"
+                      style={{ width: "20px", height: "20px" }} // Adjust the width and height as needed
                   />
-                <Typography variant="h3" color={colors.grey[100]}>
+                  <Typography variant="h3" color={colors.grey[100]}>
                   Tara|Indepay
                 </Typography>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
@@ -104,7 +105,7 @@ const Sidebar = () => {
                   fontWeight="bold"
                   sx={{ m: "10px 0 0 0" }}
                 >
-                  Ed Roh
+                  Sirclo
                 </Typography>
                 <Typography variant="h5" color={colors.greenAccent[500]}>
                   Merchant Dashboard

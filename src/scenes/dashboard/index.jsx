@@ -1,13 +1,12 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import { mockTransactions } from "../../data/mockData";
-import EmailIcon from "@mui/icons-material/Email";
-import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import Header from "../../components/Header";
 import LineChart from "../../components/LineChart";
 import StatBox from "../../components/StatBox";
 import {useEffect, useState} from "react";
 import {fetchTransactionDataAPI} from "../../data/api";
+import { ReactComponent as IDRIcon } from '../../components/idr.svg';
+import { SvgIcon } from '@mui/material';
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -21,7 +20,8 @@ const Dashboard = () => {
       const data = await fetchTransactionDataAPI('', '', '', '', '', '', navigate);
       if (data) {
         setTransactionData(data.payments);
-        setTotalAmount(data.totalAmount ? data.totalAmount.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }) : 0);
+        setTotalAmount(data.totalAmount ? data.totalAmount
+            .toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0}) : 0);
         setTotalCount(data.successCount);
       }
     } catch (error) {
@@ -32,6 +32,12 @@ const Dashboard = () => {
   useEffect(() => {
     fetchTransactionData();
   }, []);
+
+  const CustomIcon = (props) => (
+      <SvgIcon {...props}>
+        <IDRIcon style={{ color: colors.greenAccent[500] }}/>
+      </SvgIcon>
+  );
 
   return (
     <Box m="20px">
@@ -58,11 +64,6 @@ const Dashboard = () => {
           <StatBox
               title={totalAmount}
               subtitle="Total Success Amount"
-              icon={
-                <PointOfSaleIcon
-                    sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-                />
-              }
           />
         </Box>
         <Box
@@ -74,12 +75,7 @@ const Dashboard = () => {
         >
           <StatBox
             title={totalCount}
-            subtitle="Total Count"
-            icon={
-              <PointOfSaleIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
+            subtitle="Total Success Count"
           />
         </Box>
 
