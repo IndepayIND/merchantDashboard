@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -14,7 +14,8 @@ import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import LanguageIcon from '@mui/icons-material/Language';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import AppsIcon from '@mui/icons-material/Apps';
-import logo from '../../components/logo512.png';
+import logo from '../../components/assets/logo512.png';
+import {fetchPartnerDetailsAPI} from "../../data/api";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -39,6 +40,18 @@ const Sidebar = () => {
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("");
+  const [merchantName, setMerchantName] = useState([]);
+
+  const fetchPartnerDetails = async (navigate) => {
+       try {
+           return await fetchPartnerDetailsAPI(navigate);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    useEffect(() => {
+        fetchPartnerDetails().then(r => setMerchantName(r.name));
+    }, []);
 
   return (
     <Box
@@ -105,7 +118,7 @@ const Sidebar = () => {
                   fontWeight="bold"
                   sx={{ m: "10px 0 0 0" }}
                 >
-                  Sirclo
+                    {merchantName}
                 </Typography>
                 <Typography variant="h5" color={colors.greenAccent[500]}>
                   Merchant Dashboard

@@ -7,6 +7,7 @@ import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Cookies from "js-cookie";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import {deleteAllCookies} from "../../data/api";
 
 const Topbar = () => {
@@ -22,6 +23,10 @@ const Topbar = () => {
       setIsLoggedIn(false); // Update the state immediately
     }
     navigate("/login"); // Navigate to the login page
+  };
+
+  const handleSetttingClick = () => {
+    navigate("/settings"); // Navigate to the login page
   };
 
 // Check for logged-in state on page load
@@ -51,6 +56,9 @@ const Topbar = () => {
           ) : (
             <LightModeOutlinedIcon />
           )}
+        </IconButton>
+        <IconButton onClick={() => handleSetttingClick()}>
+          <SettingsOutlinedIcon />
         </IconButton>
         <IconButton onClick={() => handleLoginClick()}>
           {isLoggedIn ? (

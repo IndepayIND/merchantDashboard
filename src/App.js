@@ -15,6 +15,7 @@ import Logout from "./scenes/logout";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import Cookies from "js-cookie";
+import Settings from "./scenes/setting";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -48,8 +49,8 @@ function App() {
               <Route path="/transactions/credit-card" element={<CreditCard />} />
               <Route path="/login" element={<Login />} />
               <Route path="/logout" element={<Logout />} />
+              <Route path="/settings" element={<Settings />} />
               <Route path="*" element={<Navigate to="/" replace />} />
-              {/*<Route path="/invoices" element={<Invoices />} />*/}
               {/*<Route path="/form" element={<Form />} />*/}
               {/*<Route path="/bar" element={<Bar />} />*/}
               {/*<Route path="/pie" element={<Pie />} />*/}

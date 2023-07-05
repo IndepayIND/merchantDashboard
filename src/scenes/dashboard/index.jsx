@@ -5,7 +5,7 @@ import LineChart from "../../components/LineChart";
 import StatBox from "../../components/StatBox";
 import {useEffect, useState} from "react";
 import {fetchTransactionDataAPI} from "../../data/api";
-import { ReactComponent as IDRIcon } from '../../components/idr.svg';
+import { ReactComponent as IDRIcon } from '../../components/assets/idr.svg';
 import { SvgIcon } from '@mui/material';
 
 const Dashboard = () => {

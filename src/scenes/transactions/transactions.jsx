@@ -11,7 +11,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import StatBox from "../../components/StatBox";
-import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 
 export const columns = [
     { field: "id", headerName: "Transaction ID", flex: 1.4 },
@@ -146,7 +145,7 @@ const Transactions = (paymentMethodCategory) => {
                 >
                     <StatBox
                         title={totalCount}
-                        subtitle="Total Count"
+                        subtitle="Total Success Count"
                     />
                 </Box>
             </Box>
@@ -200,9 +199,21 @@ const Transactions = (paymentMethodCategory) => {
                     onChange={(e) => setSelectedOption(e.target.value)}
                     sx={{ ml: 2, color: "#fff" }}
                 >
-                    <MenuItem value="transactionId">Transaction ID</MenuItem>
-                    <MenuItem value="mobileNumber">Mobile Number</MenuItem>
-                    <MenuItem value="referenceId">Reference ID</MenuItem>
+                    <MenuItem value="transactionId">
+                        <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
+                            Transaction ID
+                        </Typography>
+                        </MenuItem>
+                    <MenuItem value="mobileNumber">
+                        <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
+                        Mobile Number
+                        </Typography>
+                    </MenuItem>
+                    <MenuItem value="referenceId">
+                        <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
+                        Reference ID
+                        </Typography>
+                    </MenuItem>
                 </Select>
 
                 {/* Search input */}
