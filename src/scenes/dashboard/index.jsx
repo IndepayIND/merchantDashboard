@@ -17,11 +17,19 @@ const Dashboard = () => {
 
   const fetchTransactionData = async (navigate) => {
     try {
-      const data = await fetchTransactionDataAPI('', '', '', '', '', '', navigate);
+      let fromDate;
+      let toDate;
+      const currentDate = new Date();
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth() + 1; // Months are zero-based
+      const day = currentDate.getDate();
+      fromDate = (`${year}-${month.toString().padStart(2, '0')}-01`);
+      toDate = (`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`);
+      const data = await fetchTransactionDataAPI(fromDate, toDate, '', '', '', '', navigate);
       if (data) {
         setTransactionData(data.payments);
         setTotalAmount(data.totalAmount ? data.totalAmount
-            .toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0}) : 0);
+            .toLocaleString('id-ID', {style: 'currency', currency: 'IDR', minimumFractionDigits: 0}) : 0);
         setTotalCount(data.successCount);
       }
     } catch (error) {
