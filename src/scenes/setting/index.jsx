@@ -48,14 +48,16 @@ const Setting = () => {
 
   useEffect(() => {
     fetchPartnerDetails().then((r) => {
-      setPartnerDetails({
-        firstName: r.name || "",
-        lastName: r.lastName || "",
-        email: r.email || "",
-        contact: r.mobileNumber || "",
-        callback: r.callbackUrl || "",
-      });
-      setCallbackValue(r.callbackUrl || "");
+      if (r) {
+        setPartnerDetails({
+          firstName: r.name || "",
+          lastName: r.lastName || "",
+          email: r.email || "",
+          contact: r.mobileNumber || "",
+          callback: r.callbackUrl || "",
+        });
+        setCallbackValue(r.callbackUrl || "");
+      }
     });
   }, []);
 

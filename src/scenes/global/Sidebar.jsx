@@ -50,7 +50,11 @@ const Sidebar = () => {
         }
     };
     useEffect(() => {
-        fetchPartnerDetails().then(r => setMerchantName(r.name));
+        fetchPartnerDetails().then(r => {
+            if (r && r.name) {
+                setMerchantName(r.name);
+            }
+        })
     }, []);
 
   return (
