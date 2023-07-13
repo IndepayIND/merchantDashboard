@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Box, Button, TextField, Typography, useTheme } from "@mui/material";
 import Cookies from "js-cookie";
 import {useNavigate} from "react-router-dom";
+import baseUrl from "../../data/apiConfig";
 
 const LoginScreen = ({ onLogin }) => {
     const theme = useTheme();
@@ -23,7 +24,7 @@ const LoginScreen = ({ onLogin }) => {
                 },
             };
 
-            fetch('https://dev.tara.app/api/auth/token', requestOptions)
+            fetch(`${baseUrl}/api/auth/token`, requestOptions)
                 .then(response => response.json())
                 .then(data => {
                     // Handle the response data here
