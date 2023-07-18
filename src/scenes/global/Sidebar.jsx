@@ -196,6 +196,13 @@ const Sidebar = () => {
                       setSelected={setSelected}
                   />
               </SubMenu>
+              <Item
+                  title="Settlement Report"
+                  to="/settlement"
+                  icon={<HomeOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+              />
           </Box>
         </Menu>
       </ProSidebar>
