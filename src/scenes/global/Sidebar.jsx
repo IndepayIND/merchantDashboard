@@ -16,6 +16,7 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import AppsIcon from '@mui/icons-material/Apps';
 import logo from '../../components/assets/logo512.png';
 import {fetchPartnerDetailsAPI} from "../../data/api";
+import HandshakeIcon from '@mui/icons-material/Handshake';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -199,7 +200,7 @@ const Sidebar = () => {
               <Item
                   title="Settlement Report"
                   to="/settlement"
-                  icon={<HomeOutlinedIcon />}
+                  icon={<HandshakeIcon />}
                   selected={selected}
                   setSelected={setSelected}
               />

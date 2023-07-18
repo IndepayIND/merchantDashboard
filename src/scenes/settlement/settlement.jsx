@@ -42,13 +42,13 @@ export const columns = [
         flex: 0.5,
     },
     {
-        field: "mdrfee",
+        field: "mdrFee",
         headerName: "MDR Fee",
         flex: 0.4
     },
     {
-        field: "Tax",
-        headerName: "tax",
+        field: "tax",
+        headerName: "Tax",
         flex: 0.4
     },
     {
