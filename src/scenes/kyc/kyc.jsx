@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
-import {fetchSettlementDataAPI, fetchTransactionDataAPI} from "../../data/api";
+import {fetchKYCDataAPI, fetchSettlementDataAPI, fetchTransactionDataAPI} from "../../data/api";
 import { useNavigate } from "react-router-dom";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
@@ -13,63 +13,91 @@ import MenuItem from "@mui/material/MenuItem";
 import StatBox from "../../components/StatBox";
 
 export const columns = [
-    { field: "id", headerName: "Tara Payment ID", flex: 1.5 },
-    { field: "merchantName", headerName: "Merchant", flex: 0.4 },
-    { field: "subMerchantName", headerName: "Sub Merchant Name", flex: 0.45 },
+    {
+        field: "id", headerName: "Merchant ID", minWidth: 300,
+        flex: 1
+    },
+    {
+        field: "merchantName", headerName: "Owner Name", minWidth: 100,
+        flex: 1
+    },
+    {
+        field: "subMerchantName", headerName: "Phone No", minWidth: 100,
+        flex: 1
+    },
     {
         field: "amount",
-        headerName: "Amount",
-        flex: 0.4,
+        headerName: "Email",
+        minWidth: 100,
+        flex: 1,
     },
     {
         field: "createdAt",
-        headerName: "Txn Date Time",
-        flex: 0.85,
+        headerName: "NIK / ID Number",
+        minWidth: 100,
+        flex: 1,
     },
     {
         field: "remarks",
-        headerName: "Remarks",
+        headerName: "KTP Name",
+        minWidth: 300,
         flex: 1,
     },
     {
         field: "paymentStatus",
-        headerName: "Transaction Status",
-        flex: 0.5,
+        headerName: "Date of Birth",
+        minWidth: 100,
+        flex: 1,
     },
     {
         field: "paymentMethod",
-        headerName: "Transaction Type",
-        flex: 0.5,
+        headerName: "KTP Address",
+        minWidth: 100,
+        flex: 1,
     },
     {
         field: "mdrFee",
-        headerName: "MDR Fee",
-        flex: 0.4
+        headerName: "Bank Account",
+        minWidth: 100,
+        flex: 1
     },
     {
         field: "tax",
-        headerName: "Tax",
-        flex: 0.4
+        headerName: "Account Name",
+        minWidth: 100,
+        flex: 1
     },
     {
         field: "settledAmount",
-        headerName: "Settlement Amount",
-        flex: 0.4
+        headerName: "Bank Name",
+        minWidth: 100,
+        flex: 1
     },
     {
         field: "partnerRefId",
-        headerName: "Partner Ref ID",
-        flex: 1.4,
+        headerName: "Shop Name",
+        minWidth: 100,
+        flex: 1.8,
+    },
+    {
+        field: "partnerRefId",
+        headerName: "Shop Category",
+        minWidth: 100,
+        flex: 1.8,
+    },
+    {
+        field: "partnerRefId",
+        headerName: "Shop Address",
+        minWidth: 100,
+        flex: 1.8,
     },
 ];
 
-const Settlement = (paymentMethodCategory) => {
+const KYC = (paymentMethodCategory) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [transactionData, setTransactionData] = useState([]);
     const [fromDate, setFromDate] = useState("");
-    const [totalCount, setTotalCount] = useState([]);
-    const [totalAmount, setTotalAmount] = useState([]);
     const [toDate, setToDate] = useState("");
     const [searchText, setSearchText] = useState("");
     const [selectedOption, setSelectedOption] = useState("");
@@ -77,12 +105,9 @@ const Settlement = (paymentMethodCategory) => {
 
     const fetchTransactionData = async (navigate) => {
         try {
-            const data = await fetchSettlementDataAPI(fromDate, toDate, selectedOption, searchText, '', '', navigate);
+            const data = await fetchKYCDataAPI(fromDate, toDate, selectedOption, searchText, '', navigate);
             if (data) {
-                setTransactionData(data.payments);
-                setTotalAmount(data.totalAmount ? data.totalAmount
-                    .toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0}) : 0);
-                setTotalCount(data.successCount);
+                setTransactionData(data);
             }
         } catch (error) {
             console.log(error);
@@ -127,39 +152,7 @@ const Settlement = (paymentMethodCategory) => {
 
     return (
         <Box m="20px">
-            <Header title={paymentMethodCategory === "indepayFastCheckOut" ? "Bank Account Details" : "Credit Card Details"} subtitle="List of Transaction" />
-            <Box
-                display="grid"
-                gridTemplateColumns="repeat(12, 1fr)"
-                gridAutoRows="140px"
-                gap="20px"
-            >
-                {/* ROW 1 */}
-                <Box
-                    gridColumn="span 2"
-                    backgroundColor={colors.primary[400]}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                >
-                    <StatBox
-                        title={totalAmount}
-                        subtitle="Total Success Amount"
-                    />
-                </Box>
-                <Box
-                    gridColumn="span 2"
-                    backgroundColor={colors.primary[400]}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                >
-                    <StatBox
-                        title={totalCount}
-                        subtitle="Total Success Count"
-                    />
-                </Box>
-            </Box>
+            <Header title="KYC Details" subtitle="List of Transaction" />
             <Box m="20px">
                 <Grid container spacing={2}>
                     <Grid item>
@@ -200,50 +193,17 @@ const Settlement = (paymentMethodCategory) => {
             </Box>
 
             <Box
-                display="flex"
-                backgroundColor={colors.primary[400]}
-                borderRadius="3px"
+                display="grid"
+                gridTemplateColumns="repeat(12, 1fr)"
+                gridAutoRows="140px"
+                gap="20px"
             >
-                {/* Dropdown component */}
-                <Select
-                    value={selectedOption}
-                    onChange={(e) => setSelectedOption(e.target.value)}
-                    sx={{ ml: 2, color: "#fff" }}
-                >
-                    <MenuItem value="transactionId">
-                        <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
-                            Transaction ID
-                        </Typography>
-                        </MenuItem>
-                    <MenuItem value="mobileNumber">
-                        <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
-                        Mobile Number
-                        </Typography>
-                    </MenuItem>
-                    <MenuItem value="referenceId">
-                        <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
-                        Reference ID
-                        </Typography>
-                    </MenuItem>
-                </Select>
-
-                {/* Search input */}
-                <InputBase
-                    sx={{ ml: 2, flex: 1 }}
-                    placeholder="Search"
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    onKeyPress={handleSearchKeyPress}
-                />
-                <IconButton type="button" sx={{ p: 1 }} onClick={handleSearch}>
-                    <SearchIcon />
-                </IconButton>
             </Box>
-
             <Box
                 m="40px 0 0 0"
                 height="75vh"
                 sx={{
+                    overflowX: "scroll", // Make the Box horizontally scrollable
                     // Apply font size to the table cells
                     "& .MuiDataGrid-root .MuiDataGrid-cell": {
                         fontSize: "16px",
@@ -282,10 +242,13 @@ const Settlement = (paymentMethodCategory) => {
                     rows={transactionData}
                     columns={columns}
                     components={{ Toolbar: GridToolbar }}
+                    autoHeight // Enable auto height to fit the content vertically
+                    disableColumnMenu // Optionally disable the column menu if needed
+
                 />
             </Box>
         </Box>
     );
 };
 
-export default Settlement;
+export default KYC;

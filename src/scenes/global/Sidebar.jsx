@@ -40,6 +40,7 @@ const Sidebar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const [selected, setSelected] = useState("");
   const [merchantName, setMerchantName] = useState([]);
 
@@ -54,6 +55,7 @@ const Sidebar = () => {
         fetchPartnerDetails().then(r => {
             if (r && r.name) {
                 setMerchantName(r.name);
+                setIsSuperAdmin(r.isSuperAdmin);
             }
         })
     }, []);
@@ -197,13 +199,38 @@ const Sidebar = () => {
                       setSelected={setSelected}
                   />
               </SubMenu>
-              <Item
+              {false && (
+                  <SubMenu
                   title="Settlement Report"
-                  to="/settlement"
                   icon={<HandshakeIcon />}
                   selected={selected}
+                  >
+                  <Item
+                  title="Bank Account"
+                  icon={<AppsIcon />}
+                  to="/settlement/bank-account"
+                  selected={selected}
                   setSelected={setSelected}
-              />
+                  />
+
+                  <Item
+                  title="Credit Card"
+                  icon={<CreditCardIcon />}
+                  to="/settlement/credit-card"
+                  selected={selected}
+                  setSelected={setSelected}
+                  />
+                  </SubMenu>
+              )}
+              {false && (
+                  <Item
+                  title="KYC Details"
+                  icon={<AppsIcon />}
+                  to="/kyc-details"
+                  selected={selected}
+                  setSelected={setSelected}
+                  />
+              )}
           </Box>
         </Menu>
       </ProSidebar>

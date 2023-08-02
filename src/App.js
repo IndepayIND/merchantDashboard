@@ -16,7 +16,9 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import Cookies from "js-cookie";
 import Settings from "./scenes/setting";
-import Settlement from "./scenes/settlement";
+import BankAccountSettlement from "./scenes/settlement/bankAccount";
+import KYCDetails from "./scenes/kyc";
+import CreditCardSettlement from "./scenes/settlement/creditCard";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -48,7 +50,9 @@ function App() {
               <Route path="/transactions/netbanking" element={<Netbanking />} />
               <Route path="/transactions/direct-debit" element={<DirectDebit />} />
               <Route path="/transactions/credit-card" element={<CreditCard />} />
-              <Route path="/settlement" element={<Settlement />} />
+              <Route path="/settlement/bank-account" element={<BankAccountSettlement />} />
+              <Route path="/settlement/credit-card" element={<CreditCardSettlement />} />
+              <Route path="/kyc-details" element={<KYCDetails />} />
               <Route path="/login" element={<Login />} />
               <Route path="/logout" element={<Logout />} />
               <Route path="/settings" element={<Settings />} />

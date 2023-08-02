@@ -122,6 +122,53 @@ export const fetchSettlementDataAPI = async (fromDate, toDate, option, optionVal
     }
 };
 
+export const fetchKYCDataAPI = async (fromDate, toDate, option, optionValue, limit, navigate) => {
+    try {
+        const accessToken = Cookies.get('accessToken');
+        // Check if fromDate is empty or undefined
+        const fromDateParam = fromDate ? `&fromDate=${fromDate}` : '';
+
+        // Check if toDate is empty or undefined
+        const toDateParam = toDate ? `&toDate=${toDate}` : '';
+
+        // Check if option is empty or undefined
+        const optionParam = optionValue ? `&searchBy=${option}` : '';
+
+        // Check if optionValue is empty or undefined
+        const optionValueParam = optionValue ? `&searchValue=${optionValue}` : '';
+
+        // Check if paymentMethodCategory is empty or undefined
+        const limitParam = limit ? `&limit=${limit}` : '';
+
+        const response = await fetch(
+            `${baseUrl}/v0.1/tara/pgrouter/dashboard/kyc?${fromDateParam}${toDateParam}${optionParam}${optionValueParam}${limitParam}`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+            }
+        );
+        if (response.status === 401) {
+            const accessToken = await refreshToken();
+            // Make a new request with the refreshed access token
+            if (accessToken) {
+                return await fetchKYCDataAPI();
+            } else {
+                deleteAllCookies();
+                navigate('/login');
+            }
+            return ;
+        }
+
+        const data = await response.json();
+        if (response.ok) {
+            return data.data;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 export const fetchCumulativeCountAPI = async (fromDate, toDate, navigate) => {
     try {
         const accessToken = Cookies.get('accessToken');
