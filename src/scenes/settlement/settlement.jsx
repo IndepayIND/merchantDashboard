@@ -13,53 +13,53 @@ import MenuItem from "@mui/material/MenuItem";
 import StatBox from "../../components/StatBox";
 
 export const columns = [
-    { field: "id", headerName: "Tara Payment ID", flex: 1.5 },
-    { field: "merchantName", headerName: "Merchant", flex: 0.4 },
-    { field: "subMerchantName", headerName: "Sub Merchant Name", flex: 0.45 },
+    { field: "id", headerName: "Tara Payment ID", minWidth: 300},
+    { field: "merchantName", headerName: "Merchant",  minWidth: 100},
+    { field: "subMerchantName", headerName: "Sub Merchant Name",  minWidth: 200},
     {
         field: "amount",
         headerName: "Amount",
-        flex: 0.4,
+        flex: 0.4, minWidth: 100
     },
     {
         field: "createdAt",
         headerName: "Txn Date Time",
-        flex: 0.85,
+        flex: 0.85,  minWidth: 200
     },
     {
         field: "remarks",
         headerName: "Remarks",
-        flex: 1,
+        flex: 1,minWidth: 200
     },
     {
         field: "paymentStatus",
         headerName: "Transaction Status",
-        flex: 0.5,
+        flex: 0.5, minWidth: 150
     },
     {
         field: "paymentMethod",
         headerName: "Transaction Type",
-        flex: 0.5,
+        flex: 0.5, minWidth: 150
     },
     {
         field: "mdrFee",
         headerName: "MDR Fee",
-        flex: 0.4
+        flex: 0.4, minWidth: 100
     },
     {
         field: "tax",
         headerName: "Tax",
-        flex: 0.4
+        flex: 0.4, minWidth: 100
     },
     {
         field: "settledAmount",
         headerName: "Settlement Amount",
-        flex: 0.4
+        flex: 0.4, minWidth: 200
     },
     {
         field: "partnerRefId",
         headerName: "Partner Ref ID",
-        flex: 1.4,
+        flex: 1.4, minWidth: 300
     },
 ];
 
@@ -77,7 +77,7 @@ const Settlement = (paymentMethodCategory) => {
 
     const fetchTransactionData = async (navigate) => {
         try {
-            const data = await fetchSettlementDataAPI(fromDate, toDate, selectedOption, searchText, '', '', navigate);
+            const data = await fetchSettlementDataAPI(fromDate, toDate, selectedOption, searchText, paymentMethodCategory, '', navigate);
             if (data) {
                 setTransactionData(data.payments);
                 setTotalAmount(data.totalAmount ? data.totalAmount
@@ -127,7 +127,7 @@ const Settlement = (paymentMethodCategory) => {
 
     return (
         <Box m="20px">
-            <Header title={paymentMethodCategory === "indepayFastCheckOut" ? "Bank Account Details" : "Credit Card Details"} subtitle="List of Transaction" />
+            <Header title={paymentMethodCategory === "indepayFastCheckOut" ? "Bank Account Details" : "Card Details"} subtitle="List of Transaction" />
             <Box
                 display="grid"
                 gridTemplateColumns="repeat(12, 1fr)"

@@ -157,7 +157,7 @@ const Sidebar = () => {
                   />
 
                   <Item
-                      title="Credit Card"
+                      title="Card"
                       icon={<CreditCardIcon />}
                       to="/transactions/credit-card"
                       selected={selected}
@@ -199,7 +199,7 @@ const Sidebar = () => {
                       setSelected={setSelected}
                   />
               </SubMenu>
-              {false && (
+              {isSuperAdmin && (
                   <SubMenu
                   title="Settlement Report"
                   icon={<HandshakeIcon />}
@@ -207,14 +207,14 @@ const Sidebar = () => {
                   >
                   <Item
                   title="Bank Account"
-                  icon={<AppsIcon />}
+                  icon={<AccountBalanceIcon/>}
                   to="/settlement/bank-account"
                   selected={selected}
                   setSelected={setSelected}
                   />
 
                   <Item
-                  title="Credit Card"
+                  title="Card"
                   icon={<CreditCardIcon />}
                   to="/settlement/credit-card"
                   selected={selected}
