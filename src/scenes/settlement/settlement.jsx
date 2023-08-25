@@ -52,6 +52,11 @@ export const columns = [
         flex: 0.4, minWidth: 100
     },
     {
+        field: "registrationPrincipalSource",
+        headerName: "Registration Principal Source",
+        flex: 0.4, minWidth: 100
+    },
+    {
         field: "settledAmount",
         headerName: "Settlement Amount",
         flex: 0.4, minWidth: 200
