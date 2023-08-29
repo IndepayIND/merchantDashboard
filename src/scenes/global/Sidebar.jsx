@@ -17,6 +17,7 @@ import AppsIcon from '@mui/icons-material/Apps';
 import logo from '../../components/assets/logo512.png';
 import {fetchPartnerDetailsAPI} from "../../data/api";
 import HandshakeIcon from '@mui/icons-material/Handshake';
+import StarRateIcon from '@mui/icons-material/StarRate';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -227,6 +228,15 @@ const Sidebar = () => {
                   title="KYC Details"
                   icon={<AppsIcon />}
                   to="/kyc-details"
+                  selected={selected}
+                  setSelected={setSelected}
+                  />
+              )}
+              {isSuperAdmin && (
+                  <Item
+                  title="Promotion Details"
+                  icon={<StarRateIcon />}
+                  to="/promotion-details"
                   selected={selected}
                   setSelected={setSelected}
                   />

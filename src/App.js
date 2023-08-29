@@ -18,6 +18,7 @@ import Cookies from "js-cookie";
 import Settings from "./scenes/setting";
 import BankAccountSettlement from "./scenes/settlement/bankAccount";
 import KYCDetails from "./scenes/kyc";
+import PromotionDetails from "./scenes/promotion";
 import CreditCardSettlement from "./scenes/settlement/creditCard";
 
 function App() {
@@ -53,6 +54,7 @@ function App() {
               <Route path="/settlement/bank-account" element={<BankAccountSettlement />} />
               <Route path="/settlement/credit-card" element={<CreditCardSettlement />} />
               <Route path="/kyc-details" element={<KYCDetails />} />
+              <Route path="/promotion-details" element={<PromotionDetails />} />
               <Route path="/login" element={<Login />} />
               <Route path="/logout" element={<Logout />} />
               <Route path="/settings" element={<Settings />} />
