@@ -18,6 +18,7 @@ import logo from '../../components/assets/logo512.png';
 import {fetchPartnerDetailsAPI} from "../../data/api";
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import StarRateIcon from '@mui/icons-material/StarRate';
+import PaidIcon from '@mui/icons-material/Paid';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -237,6 +238,15 @@ const Sidebar = () => {
                   title="Promotion Details"
                   icon={<StarRateIcon />}
                   to="/promotion-details"
+                  selected={selected}
+                  setSelected={setSelected}
+                  />
+              )}
+              {isSuperAdmin && (
+                  <Item
+                  title="Revenue Sharing"
+                  icon={<PaidIcon />}
+                  to="/revenue-sharing-report"
                   selected={selected}
                   setSelected={setSelected}
                   />

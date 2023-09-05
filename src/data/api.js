@@ -73,7 +73,7 @@ export const fetchTransactionDataAPI = async (fromDate, toDate, option, optionVa
     }
 };
 
-export const fetchSettlementDataAPI = async (fromDate, toDate, option, optionValue, paymentMethodCategory, limit, navigate) => {
+export const fetchSettlementDataAPI = async (fromDate, toDate, option, optionValue, paymentMethodCategory, isRevenueSharingReport, limit, navigate) => {
     try {
         const accessToken = Cookies.get('accessToken');
         // Check if fromDate is empty or undefined
@@ -87,14 +87,18 @@ export const fetchSettlementDataAPI = async (fromDate, toDate, option, optionVal
 
         // Check if optionValue is empty or undefined
         const optionValueParam = optionValue ? `&searchValue=${optionValue}` : '';
+
         // Check if paymentMethodCategory is empty or undefined
         const paymentMethodCategoryParam = paymentMethodCategory ? `&paymentMethodCategory=${paymentMethodCategory}` : '';
+
+        // Check if paymentMethodCategory is empty or undefined
+        const isRevenueSharingReportParam = isRevenueSharingReport ? `&isRevenueSharingReport=${isRevenueSharingReport}` : '';
 
         // Check if paymentMethodCategory is empty or undefined
         const limitParam = limit ? `&limit=${limit}` : '';
 
         const response = await fetch(
-            `${baseUrl}/v0.1/tara/pgrouter/dashboard/settlement?${fromDateParam}${toDateParam}${optionParam}${optionValueParam}${paymentMethodCategoryParam}${limitParam}`,
+            `${baseUrl}/v0.1/tara/pgrouter/dashboard/settlement?${fromDateParam}${toDateParam}${optionParam}${optionValueParam}${paymentMethodCategoryParam}${isRevenueSharingReportParam}${limitParam}`,
             {
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
@@ -105,7 +109,7 @@ export const fetchSettlementDataAPI = async (fromDate, toDate, option, optionVal
             const accessToken = await refreshToken();
             // Make a new request with the refreshed access token
             if (accessToken) {
-                return await fetchSettlementDataAPI();
+                return await fetchSettlementDataAPI(fromDate, toDate, option, optionValue, paymentMethodCategory, isRevenueSharingReport, limit, navigate);
             } else {
                 deleteAllCookies();
                 navigate('/login');

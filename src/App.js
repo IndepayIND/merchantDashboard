@@ -19,6 +19,7 @@ import Settings from "./scenes/setting";
 import BankAccountSettlement from "./scenes/settlement/bankAccount";
 import KYCDetails from "./scenes/kyc";
 import PromotionDetails from "./scenes/promotion";
+import RevenueSharingReport from "./scenes/revenue-sharing";
 import CreditCardSettlement from "./scenes/settlement/creditCard";
 
 function App() {
@@ -55,6 +56,7 @@ function App() {
               <Route path="/settlement/credit-card" element={<CreditCardSettlement />} />
               <Route path="/kyc-details" element={<KYCDetails />} />
               <Route path="/promotion-details" element={<PromotionDetails />} />
+              <Route path="/revenue-sharing-report" element={<RevenueSharingReport />} />
               <Route path="/login" element={<Login />} />
               <Route path="/logout" element={<Logout />} />
               <Route path="/settings" element={<Settings />} />

@@ -4,21 +4,36 @@ import { useState, useEffect } from "react";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
-import {fetchSettlementDataAPI, fetchTransactionDataAPI} from "../../data/api";
+import {fetchSettlementDataAPI} from "../../data/api";
 import { useNavigate } from "react-router-dom";
-import InputBase from "@mui/material/InputBase";
-import SearchIcon from "@mui/icons-material/Search";
+import StatBox from "../../components/StatBox";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import StatBox from "../../components/StatBox";
+import InputBase from "@mui/material/InputBase";
+import SearchIcon from "@mui/icons-material/Search";
 
 export const columns = [
-    { field: "id", headerName: "Tara Payment ID", minWidth: 300},
+
+    {
+        field: "mobileNumber",
+        headerName: "Mobile number",
+        flex: 0.75, minWidth: 200
+    },
     { field: "merchantName", headerName: "Merchant",  minWidth: 100},
     { field: "subMerchantName", headerName: "Sub Merchant Name",  minWidth: 200},
     {
         field: "amount",
-        headerName: "Amount",
+        headerName: "Purchase Amount",
+        flex: 0.4, minWidth: 100
+    },
+    {
+        field: "mdrFee",
+        headerName: "MDR Fee",
+        flex: 0.4, minWidth: 100
+    },
+    {
+        field: "tax",
+        headerName: "Tax",
         flex: 0.4, minWidth: 100
     },
     {
@@ -42,16 +57,6 @@ export const columns = [
         flex: 0.5, minWidth: 150
     },
     {
-        field: "mdrFee",
-        headerName: "MDR Fee",
-        flex: 0.4, minWidth: 100
-    },
-    {
-        field: "tax",
-        headerName: "Tax",
-        flex: 0.4, minWidth: 100
-    },
-    {
         field: "registrationPrincipalSource",
         headerName: "Registration Source",
         flex: 0.4, minWidth: 200
@@ -62,13 +67,18 @@ export const columns = [
         flex: 0.4, minWidth: 200
     },
     {
-        field: "partnerRefId",
-        headerName: "Partner Ref ID",
+        field: "revenueSharingInPercentage",
+        headerName: "Revenue Sharing %",
+        flex: 1.4, minWidth: 300
+    },
+    {
+        field: "revenueSharing",
+        headerName: "Revenue Sharing Fee",
         flex: 1.4, minWidth: 300
     },
 ];
 
-const Settlement = (paymentMethodCategory) => {
+const RevenueSharing = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [transactionData, setTransactionData] = useState([]);
@@ -82,7 +92,7 @@ const Settlement = (paymentMethodCategory) => {
 
     const fetchTransactionData = async (navigate) => {
         try {
-            const data = await fetchSettlementDataAPI(fromDate, toDate, selectedOption, searchText, paymentMethodCategory, false,'', navigate);
+            const data = await fetchSettlementDataAPI(fromDate, toDate, selectedOption, searchText, null, true, '', navigate);
             if (data) {
                 setTransactionData(data.payments);
                 setTotalAmount(data.totalAmount ? data.totalAmount
@@ -132,7 +142,7 @@ const Settlement = (paymentMethodCategory) => {
 
     return (
         <Box m="20px">
-            <Header title={paymentMethodCategory === "indepayFastCheckOut" ? "Bank Account Details" : "Card Details"} subtitle="List of Transaction" />
+            <Header title= "Revenue Sharing Report" subtitle="List of Transaction" />
             <Box
                 display="grid"
                 gridTemplateColumns="repeat(12, 1fr)"
@@ -219,15 +229,15 @@ const Settlement = (paymentMethodCategory) => {
                         <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
                             Transaction ID
                         </Typography>
-                        </MenuItem>
+                    </MenuItem>
                     <MenuItem value="mobileNumber">
                         <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
-                        Mobile Number
+                            Mobile Number
                         </Typography>
                     </MenuItem>
                     <MenuItem value="referenceId">
                         <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
-                        Reference ID
+                            Reference ID
                         </Typography>
                     </MenuItem>
                 </Select>
@@ -293,4 +303,4 @@ const Settlement = (paymentMethodCategory) => {
     );
 };
 
-export default Settlement;
+export default RevenueSharing;
