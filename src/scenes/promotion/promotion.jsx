@@ -9,50 +9,50 @@ import { useNavigate } from "react-router-dom";
 
 export const columns = [
     {
-        field: "id", headerName: "Payment ID", minWidth: 300,
+        field: "id", headerName: "Tara_Payment_ID", minWidth: 300,
         flex: 1
     },
     {
-        field: "mobileNumber", headerName: "Pay ID", minWidth: 150,
+        field: "mobileNumber", headerName: "Pay_ID", minWidth: 150,
         flex: 1
     },
     {
-        field: "merchantName", headerName: "Applied Partner", minWidth: 150,
+        field: "merchantName", headerName: "Applied_Partner", minWidth: 150,
         flex: 1
     },
     {
         field: "amount",
-        headerName: "discounted Amount",
+        headerName: "Discounted_Amount",
         minWidth: 200,
         flex: 1,
     },
     {
         field: "unDiscountedAmount",
-        headerName: "Original Amount",
+        headerName: "Original_Amount",
         minWidth: 150,
         flex: 1,
     },
     {
         field: "createdAt",
-        headerName: "Payment Date",
+        headerName: "Payment_Date",
         minWidth: 200,
         flex: 1,
     },
     {
         field: "successAt",
-        headerName: "Payment Success Date",
+        headerName: "Payment_Success_Date",
         minWidth: 200,
         flex: 1,
     },
     {
         field: "paymentStatus",
-        headerName: "Payment Status",
+        headerName: "Payment_Status",
         minWidth: 150,
         flex: 1,
     },
     {
         field: "paymentMethod",
-        headerName: "Payment Method",
+        headerName: "Payment_Method",
         minWidth: 150,
         flex: 1,
     },

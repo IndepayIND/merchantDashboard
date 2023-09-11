@@ -16,35 +16,44 @@ export const columns = [
 
     {
         field: "mobileNumber",
-        headerName: "Mobile number",
+        headerName: "Mobile_number",
         flex: 0.75, minWidth: 200
     },
-    { field: "merchantName", headerName: "Merchant",  minWidth: 100},
-    { field: "subMerchantName", headerName: "Sub Merchant Name",  minWidth: 200},
+    { field: "merchantName", headerName: "Merchant_ID",  minWidth: 100},
     {
         field: "amount",
-        headerName: "Purchase Amount",
+        headerName: "Original_amt",
+        flex: 0.4, minWidth: 100
+    },
+    {
+        field: "mdrInPercentage",
+        headerName: "MDR",
         flex: 0.4, minWidth: 100
     },
     {
         field: "mdrFee",
-        headerName: "MDR Fee",
+        headerName: "MDR_Amt",
         flex: 0.4, minWidth: 100
     },
     {
-        field: "tax",
-        headerName: "Tax",
-        flex: 0.4, minWidth: 100
+        field: "settledAmount",
+        headerName: "Net_Amount",
+        flex: 0.4, minWidth: 200
+    },
+    {
+        field: "revenueSharingInPercentage",
+        headerName: "percentage_fee",
+        flex: 1.4, minWidth: 300
+    },
+    {
+        field: "revenueSharing",
+        headerName: "amount_fee",
+        flex: 1.4, minWidth: 300
     },
     {
         field: "createdAt",
         headerName: "Txn Date Time",
         flex: 0.85,  minWidth: 200
-    },
-    {
-        field: "remarks",
-        headerName: "Remarks",
-        flex: 1,minWidth: 200
     },
     {
         field: "paymentStatus",
@@ -55,26 +64,6 @@ export const columns = [
         field: "paymentMethod",
         headerName: "Transaction Type",
         flex: 0.5, minWidth: 150
-    },
-    {
-        field: "registrationPrincipalSource",
-        headerName: "Registration Source",
-        flex: 0.4, minWidth: 200
-    },
-    {
-        field: "settledAmount",
-        headerName: "Settlement Amount",
-        flex: 0.4, minWidth: 200
-    },
-    {
-        field: "revenueSharingInPercentage",
-        headerName: "Revenue Sharing %",
-        flex: 1.4, minWidth: 300
-    },
-    {
-        field: "revenueSharing",
-        headerName: "Revenue Sharing Fee",
-        flex: 1.4, minWidth: 300
     },
 ];
 

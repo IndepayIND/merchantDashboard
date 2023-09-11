@@ -13,9 +13,9 @@ import MenuItem from "@mui/material/MenuItem";
 import StatBox from "../../components/StatBox";
 
 export const columns = [
-    { field: "id", headerName: "Tara Payment ID", minWidth: 300},
+    { field: "id", headerName: "Tara_Payment_ID", minWidth: 300},
     { field: "merchantName", headerName: "Merchant",  minWidth: 100},
-    { field: "subMerchantName", headerName: "Sub Merchant Name",  minWidth: 200},
+    { field: "subMerchantName", headerName: "Sub_Merchant_Name",  minWidth: 200},
     {
         field: "amount",
         headerName: "Amount",
@@ -23,7 +23,7 @@ export const columns = [
     },
     {
         field: "createdAt",
-        headerName: "Txn Date Time",
+        headerName: "Txn_Date_Time",
         flex: 0.85,  minWidth: 200
     },
     {
@@ -33,17 +33,17 @@ export const columns = [
     },
     {
         field: "paymentStatus",
-        headerName: "Transaction Status",
+        headerName: "Transaction_Status",
         flex: 0.5, minWidth: 150
     },
     {
         field: "paymentMethod",
-        headerName: "Transaction Type",
+        headerName: "Transaction_Type",
         flex: 0.5, minWidth: 150
     },
     {
         field: "mdrFee",
-        headerName: "MDR Fee",
+        headerName: "MDR_Fee",
         flex: 0.4, minWidth: 100
     },
     {
@@ -53,17 +53,17 @@ export const columns = [
     },
     {
         field: "registrationPrincipalSource",
-        headerName: "Registration Source",
+        headerName: "Registration_Source",
         flex: 0.4, minWidth: 200
     },
     {
         field: "settledAmount",
-        headerName: "Settlement Amount",
+        headerName: "Settlement_Amount",
         flex: 0.4, minWidth: 200
     },
     {
         field: "partnerRefId",
-        headerName: "Partner Ref ID",
+        headerName: "Partner_Ref_ID",
         flex: 1.4, minWidth: 300
     },
 ];
