@@ -74,6 +74,7 @@ const RevenueSharing = () => {
     const [fromDate, setFromDate] = useState("");
     const [totalCount, setTotalCount] = useState([]);
     const [totalAmount, setTotalAmount] = useState([]);
+    const [totalPayID, setTotalPayID] = useState([]);
     const [toDate, setToDate] = useState("");
     const [searchText, setSearchText] = useState("");
     const [selectedOption, setSelectedOption] = useState("");
@@ -87,6 +88,7 @@ const RevenueSharing = () => {
                 setTotalAmount(data.totalAmount ? data.totalAmount
                     .toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0}) : 0);
                 setTotalCount(data.successCount);
+                setTotalPayID(data.mobileNumberCount);
             }
         } catch (error) {
             console.log(error);
@@ -161,6 +163,18 @@ const RevenueSharing = () => {
                     <StatBox
                         title={totalCount}
                         subtitle="Total Success Count"
+                    />
+                </Box>
+                <Box
+                    gridColumn="span 2"
+                    backgroundColor={colors.primary[400]}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <StatBox
+                        title={totalPayID}
+                        subtitle="Unique Pay IDs Interacted With System"
                     />
                 </Box>
             </Box>
