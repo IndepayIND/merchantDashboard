@@ -11,6 +11,7 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
+import CustomDataGrid from "../../components/CustomDataGrid";
 
 export const columns = [
 
@@ -296,10 +297,9 @@ const RevenueSharing = () => {
                     },
                 }}
             >
-                <DataGrid
+                <CustomDataGrid
                     rows={transactionData}
                     columns={columns}
-                    components={{ Toolbar: GridToolbar }}
                 />
             </Box>
         </Box>

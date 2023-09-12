@@ -11,6 +11,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import StatBox from "../../components/StatBox";
+import CustomDataGrid from "../../components/CustomDataGrid";
 
 export const columns = [
     { field: "id", headerName: "Transaction ID", flex: 1.4 },
@@ -281,10 +282,9 @@ const Transactions = (paymentMethodCategory) => {
                     },
                 }}
             >
-                <DataGrid
+                <CustomDataGrid
                     rows={transactionData}
                     columns={columns}
-                    components={{ Toolbar: GridToolbar }}
                 />
             </Box>
         </Box>

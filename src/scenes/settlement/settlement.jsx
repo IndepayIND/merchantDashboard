@@ -1,5 +1,4 @@
 import { Box, Button, Grid, IconButton, Typography } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useState, useEffect } from "react";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
@@ -11,6 +10,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import StatBox from "../../components/StatBox";
+import CustomDataGrid from "../../components/CustomDataGrid";
 
 export const columns = [
     { field: "id", headerName: "Tara_Payment_ID", minWidth: 300},
@@ -297,10 +297,9 @@ const Settlement = (paymentMethodCategory) => {
                     },
                 }}
             >
-                <DataGrid
+                <CustomDataGrid
                     rows={transactionData}
                     columns={columns}
-                    components={{ Toolbar: GridToolbar }}
                 />
             </Box>
         </Box>

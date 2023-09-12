@@ -6,6 +6,7 @@ import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
 import {fetchPromotionDataAPI} from "../../data/api";
 import { useNavigate } from "react-router-dom";
+import CustomDataGrid from "../../components/CustomDataGrid";
 
 export const columns = [
     {
@@ -202,13 +203,9 @@ const Promotion = () => {
                     },
                 }}
             >
-                <DataGrid
+                <CustomDataGrid
                     rows={transactionData}
                     columns={columns}
-                    components={{ Toolbar: GridToolbar }}
-                    autoHeight // Enable auto height to fit the content vertically
-                    disableColumnMenu // Optionally disable the column menu if needed
-
                 />
             </Box>
         </Box>
