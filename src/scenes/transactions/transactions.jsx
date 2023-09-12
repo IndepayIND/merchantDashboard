@@ -1,5 +1,4 @@
 import { Box, Button, Grid, IconButton, Typography } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useState, useEffect } from "react";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
@@ -69,12 +68,16 @@ const Transactions = (paymentMethodCategory) => {
     const fetchTransactionData = async (navigate) => {
         try {
             const data = await fetchTransactionDataAPI(fromDate, toDate, selectedOption, searchText, paymentMethodCategory, '', navigate);
-            if (data) {
+            if (data && data.payments) {
                 setTransactionData(data.payments);
                 setTotalAmount(data.totalAmount ? data.totalAmount
                     .toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0}) : 0);
                 setTotalCount(data.successCount);
                 setTotalPayID(data.mobileNumberCount);
+            } else {
+                setTransactionData([]);
+                setTotalCount([]);
+                setTotalPayID([]);
             }
         } catch (error) {
             console.log(error);

@@ -1,5 +1,4 @@
-import { Box, Button, Grid, IconButton, Typography } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { Box, Button, Grid, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
@@ -79,12 +78,14 @@ const Promotion = () => {
         try {
             const data = await fetchPromotionDataAPI(fromDate, toDate, selectedOption, searchText, '', navigate);
             console.log(data);
-            if (data) {
+            if (data && data.payments) {
                 if (data.payments) {
                     setTransactionData(data.payments);
                 } else {
                     setTransactionData("");
                 }
+            } else {
+                setTransactionData([]);
             }
         } catch (error) {
             console.log(error);

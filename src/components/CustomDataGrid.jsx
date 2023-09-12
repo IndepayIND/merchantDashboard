@@ -5,9 +5,8 @@ import {
     GridToolbarDensitySelector, GridToolbarExport,
     GridToolbarFilterButton
 } from "@mui/x-data-grid";
-import {columns} from "../scenes/settlement/settlement";
 
-const CustomDataGrid = ({ rows = [], columns = [] }) => {
+const CustomDataGrid = ({ rows = [], columns = [], fileName= "REPORT_INDEPAY" }) => {
     function CustomToolbar() {
         return (
             <GridToolbarContainer>
@@ -16,8 +15,8 @@ const CustomDataGrid = ({ rows = [], columns = [] }) => {
                 <GridToolbarDensitySelector />
                 <GridToolbarExport
                     csvOptions={{
-                        fileName: 'Tara_Indepay',
-                        delimiter: '|',
+                        fileName: fileName,
+                        delimiter: ';',
                         utf8WithBom: true,
                     }}
                 />

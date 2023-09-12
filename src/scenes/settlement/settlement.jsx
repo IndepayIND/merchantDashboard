@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
-import {fetchSettlementDataAPI, fetchTransactionDataAPI} from "../../data/api";
+import {fetchSettlementDataAPI} from "../../data/api";
 import { useNavigate } from "react-router-dom";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
@@ -84,12 +84,16 @@ const Settlement = (paymentMethodCategory) => {
     const fetchTransactionData = async (navigate) => {
         try {
             const data = await fetchSettlementDataAPI(fromDate, toDate, selectedOption, searchText, paymentMethodCategory, false,'', navigate);
-            if (data) {
+            if (data && data.payments) {
                 setTransactionData(data.payments);
                 setTotalAmount(data.totalAmount ? data.totalAmount
                     .toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0}) : 0);
                 setTotalCount(data.successCount);
                 setTotalPayID(data.mobileNumberCount);
+            } else {
+                setTransactionData([]);
+                setTotalCount([]);
+                setTotalPayID([]);
             }
         } catch (error) {
             console.log(error);
@@ -300,6 +304,7 @@ const Settlement = (paymentMethodCategory) => {
                 <CustomDataGrid
                     rows={transactionData}
                     columns={columns}
+                    fileName={paymentMethodCategory === "indepayFastCheckOut" ? "REPORT_BANK_INDEPAY" : "REPORT_CARD_INDEPAY"}
                 />
             </Box>
         </Box>

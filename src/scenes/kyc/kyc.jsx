@@ -1,16 +1,10 @@
-import { Box, Button, Grid, IconButton, Typography } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { Box, Button, Grid, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
-import {fetchKYCDataAPI, fetchSettlementDataAPI, fetchTransactionDataAPI} from "../../data/api";
+import {fetchKYCDataAPI} from "../../data/api";
 import { useNavigate } from "react-router-dom";
-import InputBase from "@mui/material/InputBase";
-import SearchIcon from "@mui/icons-material/Search";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import StatBox from "../../components/StatBox";
 import CustomDataGrid from "../../components/CustomDataGrid";
 
 export const columns = [
@@ -242,7 +236,6 @@ const KYC = (paymentMethodCategory) => {
                 <CustomDataGrid
                     rows={transactionData}
                     columns={columns}
-                    components={{ Toolbar: GridToolbar }}
                 />
             </Box>
         </Box>
