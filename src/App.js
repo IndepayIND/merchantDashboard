@@ -19,8 +19,10 @@ import Settings from "./scenes/setting";
 import BankAccountSettlement from "./scenes/settlement/bankAccount";
 import KYCDetails from "./scenes/kyc";
 import PromotionDetails from "./scenes/promotion";
+import StoreDetails from "./scenes/store";
 import RevenueSharingReport from "./scenes/revenue-sharing";
 import CreditCardSettlement from "./scenes/settlement/creditCard";
+import SDKChanges from "./scenes/sdkchanges";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -56,7 +58,9 @@ function App() {
               <Route path="/settlement/credit-card" element={<CreditCardSettlement />} />
               <Route path="/kyc-details" element={<KYCDetails />} />
               <Route path="/promotion-details" element={<PromotionDetails />} />
+              <Route path="/store-details" element={<StoreDetails />} />
               <Route path="/revenue-sharing-report" element={<RevenueSharingReport />} />
+              <Route path="/sdk-changes" element={<SDKChanges />} />
               <Route path="/login" element={<Login />} />
               <Route path="/logout" element={<Logout />} />
               <Route path="/settings" element={<Settings />} />

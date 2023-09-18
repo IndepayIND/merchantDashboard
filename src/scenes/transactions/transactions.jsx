@@ -13,7 +13,12 @@ import StatBox from "../../components/StatBox";
 import CustomDataGrid from "../../components/CustomDataGrid";
 
 export const columns = [
-    { field: "id", headerName: "Transaction ID", flex: 1.4 },
+    { field: "id", headerName: "Tara_Payment_ID", flex: 1.4 },
+    {
+        field: "pgReferenceId",
+        headerName: "Payment Gateway ID",
+        flex: 1,
+    },
     { field: "merchantName", headerName: "Merchant", flex: 0.5 },
     {
         field: "amount",
@@ -90,21 +95,6 @@ const Transactions = (paymentMethodCategory) => {
     }, []);
 
     const handleFetchData = () => {
-        if (!fromDate) {
-            const currentDate = new Date();
-            const year = currentDate.getFullYear();
-            const month = currentDate.getMonth() + 1; // Months are zero-based
-            setFromDate(`${year}-${month.toString().padStart(2, '0')}-01`);
-        }
-
-        // Check if toDate is empty or undefined
-        if (!toDate) {
-            const currentDate = new Date();
-            const year = currentDate.getFullYear();
-            const month = currentDate.getMonth() + 1; // Months are zero-based
-            const day = currentDate.getDate();
-            setToDate(`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`);
-        }
         fetchTransactionData(navigate);
     };
 

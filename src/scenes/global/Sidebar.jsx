@@ -19,6 +19,9 @@ import {fetchPartnerDetailsAPI} from "../../data/api";
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import StarRateIcon from '@mui/icons-material/StarRate';
 import PaidIcon from '@mui/icons-material/Paid';
+import AppSettingsAltIcon from '@mui/icons-material/AppSettingsAlt';
+import StorefrontIcon from '@mui/icons-material/Storefront';
+import PostAddIcon from '@mui/icons-material/PostAdd';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -43,6 +46,7 @@ const Sidebar = () => {
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const [isMarketAdmin, setIsMarketAdmin] = useState(false);
   const [selected, setSelected] = useState("");
   const [merchantName, setMerchantName] = useState([]);
 
@@ -58,6 +62,7 @@ const Sidebar = () => {
             if (r && r.name) {
                 setMerchantName(r.name);
                 setIsSuperAdmin(r.isSuperAdmin);
+                setIsMarketAdmin(r.isMarketAdmin);
             }
         })
     }, []);
@@ -251,6 +256,33 @@ const Sidebar = () => {
                   setSelected={setSelected}
                   />
               )}
+              {isSuperAdmin && (
+                  <Item
+                  title="Store Details"
+                  icon={<StorefrontIcon />}
+                  to="/store-details"
+                  selected={selected}
+                  setSelected={setSelected}
+                  />
+              )}
+              {/*{isSuperAdmin && (*/}
+              {/*    <Item*/}
+              {/*    title="Order Details"*/}
+              {/*    icon={<PostAddIcon />}*/}
+              {/*    to="/order-details"*/}
+              {/*    selected={selected}*/}
+              {/*    setSelected={setSelected}*/}
+              {/*    />*/}
+              {/*)}*/}
+              {/*{isSuperAdmin && (*/}
+              {/*    <Item*/}
+              {/*    title="SDK changes"*/}
+              {/*    icon={<AppSettingsAltIcon />}*/}
+              {/*    to="/sdk-changes"*/}
+              {/*    selected={selected}*/}
+              {/*    setSelected={setSelected}*/}
+              {/*    />*/}
+              {/*)}*/}
           </Box>
         </Menu>
       </ProSidebar>
