@@ -230,7 +230,7 @@ const Store = () => {
 
     const fetchStoreData = async (navigate) => {
         try {
-            const data = await fetchStoreDataAPI(fromDate, toDate, selectedOption, 'taru', '', navigate);
+            const data = await fetchStoreDataAPI(fromDate, toDate, selectedOption, searchText, '', navigate);
             if (data && data.store) {
                 const storeData = data.store.map((storeItem) => {
                     if (typeof storeItem === 'object' && 'id' in storeItem) {
