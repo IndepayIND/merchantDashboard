@@ -55,24 +55,6 @@ export const columns = [
         flex: 1
     },
     {
-        field: "scTax",
-        headerName: "scTax",
-        minWidth: 150,
-        flex: 1
-    },
-    {
-        field: "pbTax",
-        headerName: "pbTax",
-        minWidth: 150,
-        flex: 1
-    },
-    {
-        field: "otherTax",
-        headerName: "otherTax",
-        minWidth: 150,
-        flex: 1
-    },
-    {
         field: "storeRating",
         headerName: "storeRating",
         minWidth: 150,
@@ -129,18 +111,6 @@ export const columns = [
     {
         field: "updatedDateTime",
         headerName: "updatedDateTime",
-        minWidth: 200,
-        flex: 1
-    },
-    {
-        field: "gmbLocationCreated",
-        headerName: "gmbLocationCreated",
-        minWidth: 200,
-        flex: 1
-    },
-    {
-        field: "gmbLocationVerified",
-        headerName: "gmbLocationVerified",
         minWidth: 200,
         flex: 1
     },
