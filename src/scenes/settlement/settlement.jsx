@@ -15,6 +15,7 @@ import CustomDataGrid from "../../components/CustomDataGrid";
 export const columns = [
     { field: "id", headerName: "Tara_Payment_ID", minWidth: 300},
     { field: "merchantName", headerName: "Merchant",  minWidth: 100},
+    { field: "merchantID", headerName: "Merchant_ID",  minWidth: 100},
     { field: "subMerchantName", headerName: "Sub_Merchant_Name",  minWidth: 200},
     {
         field: "amount",
