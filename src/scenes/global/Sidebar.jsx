@@ -22,7 +22,8 @@ import PaidIcon from '@mui/icons-material/Paid';
 import AppSettingsAltIcon from '@mui/icons-material/AppSettingsAlt';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import PostAddIcon from '@mui/icons-material/PostAdd';
-
+import {RouteEnum} from "../../routeEnum";
+import {containsSubstring} from "../../routeEnum";
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -45,10 +46,9 @@ const Sidebar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
-  const [isMarketAdmin, setIsMarketAdmin] = useState(false);
   const [selected, setSelected] = useState("");
   const [merchantName, setMerchantName] = useState([]);
+  const [dashboardRoute, setDashboardRoute] = useState([]);
 
   const fetchPartnerDetails = async (navigate) => {
        try {
@@ -57,12 +57,12 @@ const Sidebar = () => {
             console.log(error);
         }
     };
+
     useEffect(() => {
         fetchPartnerDetails().then(r => {
             if (r && r.name) {
                 setMerchantName(r.name);
-                setIsSuperAdmin(r.isSuperAdmin);
-                setIsMarketAdmin(r.isMarketAdmin);
+                setDashboardRoute(r.dashboardRoutes);
             }
         })
     }, []);
@@ -150,7 +150,8 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
 
-              <SubMenu
+              {containsSubstring(dashboardRoute, RouteEnum.transactionRoute) && (
+                  <SubMenu
                   title="Transactions"
                   icon={<PaymentsIcon />}
                   selected={selected}
@@ -206,7 +207,9 @@ const Sidebar = () => {
                       setSelected={setSelected}
                   />
               </SubMenu>
-              {isSuperAdmin && (
+              )}
+
+              {containsSubstring(dashboardRoute, RouteEnum.settelementRoute) && (
                   <SubMenu
                   title="Settlement Report"
                   icon={<HandshakeIcon />}
@@ -229,7 +232,7 @@ const Sidebar = () => {
                   />
                   </SubMenu>
               )}
-              {false && (
+              {containsSubstring(dashboardRoute, RouteEnum.kycRoute) && (
                   <Item
                   title="KYC Details"
                   icon={<AppsIcon />}
@@ -238,7 +241,7 @@ const Sidebar = () => {
                   setSelected={setSelected}
                   />
               )}
-              {isSuperAdmin && (
+              {containsSubstring(dashboardRoute, RouteEnum.promotionRoute) && (
                   <Item
                   title="Promotion Details"
                   icon={<StarRateIcon />}
@@ -247,7 +250,7 @@ const Sidebar = () => {
                   setSelected={setSelected}
                   />
               )}
-              {isSuperAdmin && (
+              {containsSubstring(dashboardRoute, RouteEnum.revenueReport) && (
                   <Item
                   title="Revenue Sharing"
                   icon={<PaidIcon />}
@@ -256,7 +259,7 @@ const Sidebar = () => {
                   setSelected={setSelected}
                   />
               )}
-              {isSuperAdmin && (
+              {containsSubstring(dashboardRoute, RouteEnum.storeRoute) && (
                   <Item
                   title="Store Details"
                   icon={<StorefrontIcon />}

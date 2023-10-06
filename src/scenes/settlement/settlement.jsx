@@ -84,7 +84,7 @@ const Settlement = (paymentMethodCategory) => {
 
     const fetchTransactionData = async (navigate) => {
         try {
-            const data = await fetchSettlementDataAPI(fromDate, toDate, selectedOption, searchText, paymentMethodCategory, false,'', navigate);
+            const data = await fetchSettlementDataAPI(fromDate, toDate, selectedOption, searchText, paymentMethodCategory,'', navigate);
             if (data && data.payments) {
                 setTransactionData(data.payments);
                 setTotalAmount(data.totalAmount ? data.totalAmount

@@ -23,16 +23,34 @@ import StoreDetails from "./scenes/store";
 import RevenueSharingReport from "./scenes/revenue-sharing";
 import CreditCardSettlement from "./scenes/settlement/creditCard";
 import SDKChanges from "./scenes/sdkchanges";
+import {fetchPartnerDetailsAPI} from "./data/api";
+import {containsSubstring} from "./routeEnum";
+import {RouteEnum} from "./routeEnum";
 
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
   const navigate = useNavigate();
+  const [dashboardRoute, setDashboardRoute] = useState([]);
+
+  const fetchPartnerDetails = async (navigate) => {
+    try {
+      return await fetchPartnerDetailsAPI(navigate);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     const accessToken = Cookies.get("accessToken");
     if (!accessToken) {
       navigate("/login");
+    } else {
+      fetchPartnerDetails().then(r => {
+        if (r && r.name) {
+          setDashboardRoute(r.dashboardRoutes);
+        }
+      })
     }
   }, [navigate]);
 
@@ -46,20 +64,40 @@ function App() {
             <Topbar setIsSidebar={setIsSidebar} />
             <Routes>
               <Route path="/" element={<Dashboard />} />
-              {/*<Route path="/team" element={<Team />} />*/}
-              <Route path="/transactions" element={<Transactions />} />
-              <Route path="/transactions/virtual-account" element={<VirtualAccount />} />
-              <Route path="/transactions/e-wallet" element={<EWallet />} />
-              <Route path="/transactions/qris" element={<QRIS />} />
-              <Route path="/transactions/netbanking" element={<Netbanking />} />
-              <Route path="/transactions/direct-debit" element={<DirectDebit />} />
-              <Route path="/transactions/credit-card" element={<CreditCard />} />
-              <Route path="/settlement/bank-account" element={<BankAccountSettlement />} />
-              <Route path="/settlement/credit-card" element={<CreditCardSettlement />} />
-              <Route path="/kyc-details" element={<KYCDetails />} />
-              <Route path="/promotion-details" element={<PromotionDetails />} />
-              <Route path="/store-details" element={<StoreDetails />} />
-              <Route path="/revenue-sharing-report" element={<RevenueSharingReport />} />
+              {containsSubstring(dashboardRoute, RouteEnum.transactionRoute) && (
+                  <>
+                    <Route path="/transactions" element={<Transactions />} />
+                    <Route path="/transactions/virtual-account" element={<VirtualAccount />} />
+                    <Route path="/transactions/e-wallet" element={<EWallet />} />
+                    <Route path="/transactions/qris" element={<QRIS />} />
+                    <Route path="/transactions/netbanking" element={<Netbanking />} />
+                    <Route path="/transactions/direct-debit" element={<DirectDebit />} />
+                    <Route path="/transactions/credit-card" element={<CreditCard />} />
+                  </>
+              )}
+
+              {containsSubstring(dashboardRoute, RouteEnum.settelementRoute) && (
+                  <>
+                    <Route path="/settlement/bank-account" element={<BankAccountSettlement />} />
+                    <Route path="/settlement/credit-card" element={<CreditCardSettlement />} />
+                  </>
+              )}
+
+              {containsSubstring(dashboardRoute, RouteEnum.kycRoute) && (
+                  <Route path="/kyc-details" element={<KYCDetails />} />
+              )}
+
+              {containsSubstring(dashboardRoute, RouteEnum.promotionRoute) && (
+                  <Route path="/promotion-details" element={<PromotionDetails />} />
+              )}
+
+              {containsSubstring(dashboardRoute, RouteEnum.storeRoute) && (
+                  <Route path="/store-details" element={<StoreDetails />} />
+              )}
+
+              {containsSubstring(dashboardRoute, RouteEnum.revenueReport) && (
+                  <Route path="/revenue-sharing-report" element={<RevenueSharingReport />} />
+              )}
               <Route path="/sdk-changes" element={<SDKChanges />} />
               <Route path="/login" element={<Login />} />
               <Route path="/logout" element={<Logout />} />

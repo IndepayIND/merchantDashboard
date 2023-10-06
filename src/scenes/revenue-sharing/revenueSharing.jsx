@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
-import {fetchSettlementDataAPI} from "../../data/api";
+import {fetchRevenueDataAPI} from "../../data/api";
 import { useNavigate } from "react-router-dom";
 import StatBox from "../../components/StatBox";
 import Select from "@mui/material/Select";
@@ -19,7 +19,8 @@ export const columns = [
         headerName: "Mobile_number",
         flex: 0.75, minWidth: 200
     },
-    { field: "merchantName", headerName: "Merchant_ID",  minWidth: 100},
+    { field: "merchantID", headerName: "Merchant_ID",  minWidth: 100},
+    { field: "merchantName", headerName: "Merchant Name",  minWidth: 140},
     {
         field: "amount",
         headerName: "Original_amt",
@@ -43,28 +44,18 @@ export const columns = [
     {
         field: "revenueSharingInPercentage",
         headerName: "percentage_fee",
-        flex: 1.4, minWidth: 300
+        flex: 1.4, minWidth: 100
     },
     {
         field: "revenueSharing",
         headerName: "amount_fee",
-        flex: 1.4, minWidth: 300
+        flex: 1.4, minWidth: 100
     },
     {
         field: "createdAt",
         headerName: "Txn Date Time",
         flex: 0.85,  minWidth: 200
-    },
-    {
-        field: "paymentStatus",
-        headerName: "Transaction Status",
-        flex: 0.5, minWidth: 150
-    },
-    {
-        field: "paymentMethod",
-        headerName: "Transaction Type",
-        flex: 0.5, minWidth: 150
-    },
+    }
 ];
 
 const RevenueSharing = () => {
@@ -82,7 +73,7 @@ const RevenueSharing = () => {
 
     const fetchTransactionData = async (navigate) => {
         try {
-            const data = await fetchSettlementDataAPI(fromDate, toDate, selectedOption, searchText, null, true, '', navigate);
+            const data = await fetchRevenueDataAPI(fromDate, toDate, selectedOption, searchText, null, '', navigate);
             if (data && data.payments) {
                 setTransactionData(data.payments);
                 setTotalAmount(data.totalAmount ? data.totalAmount
