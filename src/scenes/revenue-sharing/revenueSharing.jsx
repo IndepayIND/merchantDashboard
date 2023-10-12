@@ -1,10 +1,9 @@
-import { Box, Button, Grid, IconButton, Typography } from "@mui/material";
-import { useState, useEffect } from "react";
-import { tokens } from "../../theme";
+import {Box, Button, Grid, IconButton, Typography, useTheme} from "@mui/material";
+import {useEffect, useState} from "react";
+import {tokens} from "../../theme";
 import Header from "../../components/Header";
-import { useTheme } from "@mui/material";
-import {fetchRevenueDataAPI} from "../../data/api";
-import { useNavigate } from "react-router-dom";
+import {fetchAllPartnerDetailsAPI, fetchRevenueDataAPI} from "../../data/api";
+import {useNavigate} from "react-router-dom";
 import StatBox from "../../components/StatBox";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -62,6 +61,7 @@ const RevenueSharing = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [transactionData, setTransactionData] = useState([]);
+    const [partnerData, setpartnerData] = useState([]);
     const [fromDate, setFromDate] = useState("");
     const [totalCount, setTotalCount] = useState([]);
     const [totalAmount, setTotalAmount] = useState([]);
@@ -69,7 +69,16 @@ const RevenueSharing = () => {
     const [toDate, setToDate] = useState("");
     const [searchText, setSearchText] = useState("");
     const [selectedOption, setSelectedOption] = useState("");
+    const [partnerSelectedOption, setPartnerSelectedOption] = useState("");
     const navigate = useNavigate();
+
+    const fetchAllPartnerDetails = async (navigate) => {
+        try {
+            return await fetchAllPartnerDetailsAPI(navigate);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const fetchTransactionData = async (navigate) => {
         try {
@@ -80,6 +89,7 @@ const RevenueSharing = () => {
                     .toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0}) : 0);
                 setTotalCount(data.successCount);
                 setTotalPayID(data.mobileNumberCount);
+                setSearchText("");
             } else {
                 setTransactionData([]);
                 setTotalCount([]);
@@ -92,7 +102,11 @@ const RevenueSharing = () => {
 
     useEffect(() => {
         setSelectedOption("transactionId");
+        setPartnerSelectedOption("All");
         handleFetchData();
+        fetchAllPartnerDetails().then(r => {
+            setpartnerData(r);
+        })
     }, []);
 
     const handleFetchData = () => {
@@ -209,6 +223,26 @@ const RevenueSharing = () => {
                             Fetch Data
                         </Button>
                     </Grid>
+                    {false && <Grid>
+                        <Select
+                            value={partnerSelectedOption}
+                            onChange={(e) => setPartnerSelectedOption(e.target.value)}
+                            sx={{ ml: 2, color: "#fff" }}
+                        >
+                            <MenuItem value="All">
+                                <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
+                                    All
+                                </Typography>
+                            </MenuItem>
+                            {partnerData.map((item) => (
+                                <MenuItem key={item.id} value={item.id}>
+                                    <Typography sx={{ color: colors.grey[100], textAlign: 'center' }}>
+                                        {item.name}
+                                    </Typography>
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </Grid>}
                 </Grid>
             </Box>
 

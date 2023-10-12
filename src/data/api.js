@@ -440,6 +440,38 @@ export const fetchPartnerDetailsAPI = async (navigate) => {
     }
 };
 
+export const fetchAllPartnerDetailsAPI = async (navigate) => {
+    try {
+        const accessToken = Cookies.get('accessToken');
+        const response = await fetch(
+            `${baseUrl}/v0.1/tara/pgrouter/dashboard/all-partner-details`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+            }
+        );
+        if (response.status === 401) {
+            const accessToken = await refreshToken();
+            // Make a new request with the refreshed access token
+            if (accessToken) {
+                return await fetchAllPartnerDetailsAPI();
+            } else {
+                deleteAllCookies();
+                navigate('/login');
+            }
+            return ;
+        }
+
+        const data = await response.json();
+        if (response.ok) {
+            return data.data;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 export const updatePartnerDetailsAPI = async (callbackURL, navigate) => {
     try {
         const accessToken = Cookies.get('accessToken');
