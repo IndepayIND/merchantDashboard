@@ -2,7 +2,7 @@ import {Box, Button, Grid, IconButton, Typography, useTheme} from "@mui/material
 import {useEffect, useState} from "react";
 import {tokens} from "../../theme";
 import Header from "../../components/Header";
-import {fetchAllPartnerDetailsAPI, fetchRevenueDataAPI} from "../../data/api";
+import {fetchAllPartnerDetailsAPI, fetchRevenueDataAPI, loginAPI} from "../../data/api";
 import {useNavigate} from "react-router-dom";
 import StatBox from "../../components/StatBox";
 import Select from "@mui/material/Select";
@@ -62,14 +62,16 @@ const RevenueSharing = () => {
     const colors = tokens(theme.palette.mode);
     const [transactionData, setTransactionData] = useState([]);
     const [partnerData, setpartnerData] = useState([]);
+    const [partnerToken, setPartnerToken] = useState([]);
     const [fromDate, setFromDate] = useState("");
     const [totalCount, setTotalCount] = useState([]);
+    const [revenueAmountLast1Month, setRevenueAmountLast1Month] = useState([]);
+    const [revenueAmountMTD, setRevenueAmountMTD] = useState([]);
     const [totalAmount, setTotalAmount] = useState([]);
-    const [totalPayID, setTotalPayID] = useState([]);
     const [toDate, setToDate] = useState("");
     const [searchText, setSearchText] = useState("");
     const [selectedOption, setSelectedOption] = useState("");
-    const [partnerSelectedOption, setPartnerSelectedOption] = useState("");
+    const [partnerSelectedOption, setPartnerSelectedOption] = useState("None");
     const navigate = useNavigate();
 
     const fetchAllPartnerDetails = async (navigate) => {
@@ -80,20 +82,25 @@ const RevenueSharing = () => {
         }
     };
 
-    const fetchTransactionData = async (navigate) => {
+    const fetchRevenueSharingData = async (navigate) => {
         try {
-            const data = await fetchRevenueDataAPI(fromDate, toDate, selectedOption, searchText, null, '', navigate);
+            const data = await fetchRevenueDataAPI(fromDate, toDate, selectedOption, searchText, null, '', navigate, partnerToken);
             if (data && data.payments) {
                 setTransactionData(data.payments);
                 setTotalAmount(data.totalAmount ? data.totalAmount
                     .toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0}) : 0);
                 setTotalCount(data.successCount);
-                setTotalPayID(data.mobileNumberCount);
+                setRevenueAmountLast1Month(data.revenueAmountLast1Month ? data.revenueAmountLast1Month
+                    .toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0}) : 0);
+                setRevenueAmountMTD(data.revenueAmountMTD ? data.revenueAmountMTD
+                    .toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0}) : 0);
                 setSearchText("");
             } else {
                 setTransactionData([]);
                 setTotalCount([]);
-                setTotalPayID([]);
+                setTotalAmount([]);
+                setRevenueAmountLast1Month([]);
+                setRevenueAmountMTD([]);
             }
         } catch (error) {
             console.log(error);
@@ -102,12 +109,12 @@ const RevenueSharing = () => {
 
     useEffect(() => {
         setSelectedOption("transactionId");
-        setPartnerSelectedOption("All");
+        handlePartnerSelectedOption(partnerSelectedOption);
         handleFetchData();
         fetchAllPartnerDetails().then(r => {
             setpartnerData(r);
         })
-    }, []);
+    }, [partnerSelectedOption, partnerToken]);
 
     const handleFetchData = () => {
         if (!fromDate) {
@@ -125,13 +132,13 @@ const RevenueSharing = () => {
             const day = currentDate.getDate();
             setToDate(`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`);
         }
-        fetchTransactionData(navigate);
+        fetchRevenueSharingData(navigate);
     };
 
     const handleSearch = () => {
         setFromDate('');
         setToDate('');
-        fetchTransactionData(navigate);
+        fetchRevenueSharingData(navigate);
     };
 
     const handleSearchKeyPress = (e) => {
@@ -139,6 +146,20 @@ const RevenueSharing = () => {
             handleSearch();
         }
     };
+
+    async function handlePartnerSelectedOption(value) {
+        if (partnerData) {
+            const partnerObject = partnerData.find(item => item.id === value);
+            if (partnerObject) {
+                const data = await loginAPI(partnerObject.clientId, partnerObject.clientKey);
+                if (data) {
+                    setPartnerToken(data.token);
+                    console.log(partnerToken);
+                    fetchRevenueSharingData(navigate);
+                }
+            }
+        }
+    }
 
     return (
         <Box m="20px">
@@ -171,7 +192,7 @@ const RevenueSharing = () => {
                 >
                     <StatBox
                         title={totalCount}
-                        subtitle="Total Success Count"
+                        subtitle="#of success transactions that is applied revenue sharing"
                     />
                 </Box>
                 <Box
@@ -182,8 +203,20 @@ const RevenueSharing = () => {
                     justifyContent="center"
                 >
                     <StatBox
-                        title={totalPayID}
-                        subtitle="Unique Pay IDs Interacted With System"
+                        title={revenueAmountLast1Month}
+                        subtitle="Total Revenue Sharing(Past 30 Days)"
+                    />
+                </Box>
+                <Box
+                    gridColumn="span 2"
+                    backgroundColor={colors.primary[400]}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <StatBox
+                        title={revenueAmountMTD}
+                        subtitle="Total Revenue Sharing(Month Till Date)"
                     />
                 </Box>
             </Box>
@@ -223,15 +256,17 @@ const RevenueSharing = () => {
                             Fetch Data
                         </Button>
                     </Grid>
-                    {false && <Grid>
+                    {partnerData && <Grid>
                         <Select
                             value={partnerSelectedOption}
-                            onChange={(e) => setPartnerSelectedOption(e.target.value)}
+                            onChange={(e) => {
+                                setPartnerSelectedOption(e.target.value)
+                            }}
                             sx={{ ml: 2, color: "#fff" }}
                         >
-                            <MenuItem value="All">
+                            <MenuItem value="None">
                                 <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
-                                    All
+                                    None
                                 </Typography>
                             </MenuItem>
                             {partnerData.map((item) => (

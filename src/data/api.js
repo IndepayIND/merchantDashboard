@@ -123,9 +123,9 @@ export const fetchSettlementDataAPI = async (fromDate, toDate, option, optionVal
     }
 };
 
-export const fetchRevenueDataAPI = async (fromDate, toDate, option, optionValue, paymentMethodCategory, limit, navigate) => {
+export const fetchRevenueDataAPI = async (fromDate, toDate, option, optionValue, paymentMethodCategory, limit, navigate, token) => {
     try {
-        const accessToken = Cookies.get('accessToken');
+        const accessToken = token ? token : Cookies.get('accessToken');
         // Check if fromDate is empty or undefined
         const fromDateParam = fromDate ? `&fromDate=${fromDate}` : '';
 
@@ -161,6 +161,32 @@ export const fetchRevenueDataAPI = async (fromDate, toDate, option, optionValue,
                 deleteAllCookies();
                 navigate('/login');
             }
+            return ;
+        }
+
+        const data = await response.json();
+        if (response.ok) {
+            return data.data;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const loginAPI = async (username, password) => {
+    try {
+        const encodedKey = btoa(`${username}:${password}`);
+        const response = await fetch(
+            `${baseUrl}/api/auth/token`,
+            {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Basic ${encodedKey}`,
+                },
+            }
+        );
+
+        if (response.status === 401) {
             return ;
         }
 
