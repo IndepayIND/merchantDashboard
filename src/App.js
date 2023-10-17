@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom"; // Import the Navigate component
+import {useEffect, useState} from "react";
+import {Navigate, Route, Routes, useNavigate} from "react-router-dom"; // Import the Navigate component
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
@@ -12,8 +12,8 @@ import DirectDebit from "./scenes/transactions/directDebit";
 import CreditCard from "./scenes/transactions/creditcard";
 import Login from "./scenes/login";
 import Logout from "./scenes/logout";
-import { CssBaseline, ThemeProvider } from "@mui/material";
-import { ColorModeContext, useMode } from "./theme";
+import {CssBaseline, ThemeProvider} from "@mui/material";
+import {ColorModeContext, useMode} from "./theme";
 import Cookies from "js-cookie";
 import Settings from "./scenes/setting";
 import BankAccountSettlement from "./scenes/settlement/bankAccount";
@@ -21,11 +21,11 @@ import KYCDetails from "./scenes/kyc";
 import PromotionDetails from "./scenes/promotion";
 import StoreDetails from "./scenes/store";
 import RevenueSharingReport from "./scenes/revenue-sharing";
+import PromotionData from "./scenes/promotion-data/promotionData";
 import CreditCardSettlement from "./scenes/settlement/creditCard";
 import SDKChanges from "./scenes/sdkchanges";
 import {fetchPartnerDetailsAPI} from "./data/api";
-import {containsSubstring} from "./routeEnum";
-import {RouteEnum} from "./routeEnum";
+import {containsSubstring, RouteEnum} from "./routeEnum";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -97,6 +97,10 @@ function App() {
 
               {containsSubstring(dashboardRoute, RouteEnum.revenueReport) && (
                   <Route path="/revenue-sharing-report" element={<RevenueSharingReport />} />
+              )}
+
+              {containsSubstring(dashboardRoute, RouteEnum.promoDataRoute) && (
+                  <Route path="/promotion-data" element={<PromotionData />} />
               )}
               <Route path="/sdk-changes" element={<SDKChanges />} />
               <Route path="/login" element={<Login />} />

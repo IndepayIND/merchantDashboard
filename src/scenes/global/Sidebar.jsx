@@ -1,9 +1,9 @@
 import {useEffect, useState} from "react";
-import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
-import { Link } from "react-router-dom";
+import {Menu, MenuItem, ProSidebar, SubMenu} from "react-pro-sidebar";
+import {Box, IconButton, Typography, useTheme} from "@mui/material";
+import {Link} from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
-import { tokens } from "../../theme";
+import {tokens} from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PaymentsIcon from '@mui/icons-material/Payments';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
@@ -19,11 +19,9 @@ import {fetchPartnerDetailsAPI} from "../../data/api";
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import StarRateIcon from '@mui/icons-material/StarRate';
 import PaidIcon from '@mui/icons-material/Paid';
-import AppSettingsAltIcon from '@mui/icons-material/AppSettingsAlt';
 import StorefrontIcon from '@mui/icons-material/Storefront';
-import PostAddIcon from '@mui/icons-material/PostAdd';
-import {RouteEnum} from "../../routeEnum";
-import {containsSubstring} from "../../routeEnum";
+import {containsSubstring, RouteEnum} from "../../routeEnum";
+
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -264,6 +262,15 @@ const Sidebar = () => {
                   title="Store Details"
                   icon={<StorefrontIcon />}
                   to="/store-details"
+                  selected={selected}
+                  setSelected={setSelected}
+                  />
+              )}
+              {containsSubstring(dashboardRoute, RouteEnum.promoDataRoute) && (
+                  <Item
+                  title="Promotion Data"
+                  icon={<StarRateIcon />}
+                  to="/promotion-data"
                   selected={selected}
                   setSelected={setSelected}
                   />

@@ -125,7 +125,7 @@ export const fetchSettlementDataAPI = async (fromDate, toDate, option, optionVal
 
 export const fetchRevenueDataAPI = async (fromDate, toDate, option, optionValue, paymentMethodCategory, limit, navigate, token) => {
     try {
-        const accessToken = token ? token : Cookies.get('accessToken');
+        const accessToken = token !== undefined && token !== null && token !== '' ? token : Cookies.get('accessToken');
         // Check if fromDate is empty or undefined
         const fromDateParam = fromDate ? `&fromDate=${fromDate}` : '';
 
@@ -482,6 +482,38 @@ export const fetchAllPartnerDetailsAPI = async (navigate) => {
             // Make a new request with the refreshed access token
             if (accessToken) {
                 return await fetchAllPartnerDetailsAPI();
+            } else {
+                deleteAllCookies();
+                navigate('/login');
+            }
+            return ;
+        }
+
+        const data = await response.json();
+        if (response.ok) {
+            return data.data;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const fetchAllCredentialDetailsAPI = async (navigate) => {
+    try {
+        const accessToken = Cookies.get('accessToken');
+        const response = await fetch(
+            `${baseUrl}/v0.1/tara/pgrouter/dashboard/all-cred-details`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+            }
+        );
+        if (response.status === 401) {
+            const accessToken = await refreshToken();
+            // Make a new request with the refreshed access token
+            if (accessToken) {
+                return await fetchAllCredentialDetailsAPI();
             } else {
                 deleteAllCookies();
                 navigate('/login');

@@ -62,7 +62,7 @@ const RevenueSharing = () => {
     const colors = tokens(theme.palette.mode);
     const [transactionData, setTransactionData] = useState([]);
     const [partnerData, setpartnerData] = useState([]);
-    const [partnerToken, setPartnerToken] = useState([]);
+    const [partnerToken, setPartnerToken] = useState("");
     const [fromDate, setFromDate] = useState("");
     const [totalCount, setTotalCount] = useState([]);
     const [revenueAmountLast1Month, setRevenueAmountLast1Month] = useState([]);
@@ -72,6 +72,7 @@ const RevenueSharing = () => {
     const [searchText, setSearchText] = useState("");
     const [selectedOption, setSelectedOption] = useState("");
     const [partnerSelectedOption, setPartnerSelectedOption] = useState("None");
+    const [customDateSelectedOption, setCustomDateSelectedOption] = useState("custom_time");
     const navigate = useNavigate();
 
     const fetchAllPartnerDetails = async (navigate) => {
@@ -82,7 +83,7 @@ const RevenueSharing = () => {
         }
     };
 
-    const fetchRevenueSharingData = async (navigate) => {
+    const fetchRevenueSharingData = async (fromDate, toDate, navigate, partnerToken) => {
         try {
             const data = await fetchRevenueDataAPI(fromDate, toDate, selectedOption, searchText, null, '', navigate, partnerToken);
             if (data && data.payments) {
@@ -109,12 +110,11 @@ const RevenueSharing = () => {
 
     useEffect(() => {
         setSelectedOption("transactionId");
-        handlePartnerSelectedOption(partnerSelectedOption);
         handleFetchData();
         fetchAllPartnerDetails().then(r => {
             setpartnerData(r);
         })
-    }, [partnerSelectedOption, partnerToken]);
+    }, []);
 
     const handleFetchData = () => {
         if (!fromDate) {
@@ -132,13 +132,13 @@ const RevenueSharing = () => {
             const day = currentDate.getDate();
             setToDate(`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`);
         }
-        fetchRevenueSharingData(navigate);
+        fetchRevenueSharingData(fromDate, toDate, navigate, partnerToken);
     };
 
     const handleSearch = () => {
         setFromDate('');
         setToDate('');
-        fetchRevenueSharingData(navigate);
+        fetchRevenueSharingData('', '', navigate, partnerToken);
     };
 
     const handleSearchKeyPress = (e) => {
@@ -155,9 +155,61 @@ const RevenueSharing = () => {
                 if (data) {
                     setPartnerToken(data.token);
                     console.log(partnerToken);
-                    fetchRevenueSharingData(navigate);
+                    fetchRevenueSharingData(fromDate, toDate, navigate, data.token);
                 }
+            } else {
+                setTransactionData([]);
+                setTotalCount([]);
+                setTotalAmount([]);
+                setRevenueAmountLast1Month([]);
+                setRevenueAmountMTD([]);
             }
+        }
+    }
+
+    async function handleCustomDateSelectedOption(value) {
+        const today = new Date();
+        let date1;
+        let date2;
+        switch (value) {
+            case "past_1_day" :
+                const oneDayAgo = new Date(today);
+                oneDayAgo.setDate(today.getDate() - 1);
+                setToDate(today.toISOString().split("T")[0]);
+                setFromDate(oneDayAgo.toISOString().split("T")[0]);
+                date1 = oneDayAgo.toISOString().split("T")[0];
+                date2 = today.toISOString().split("T")[0];
+                fetchRevenueSharingData(date1, date2, navigate, partnerToken);
+                break;
+            case "past_1_week" :
+                const oneWeekAgo = new Date(today);
+                oneWeekAgo.setDate(today.getDate() - 7);
+                setFromDate(oneWeekAgo.toISOString().split("T")[0]);
+                setToDate(today.toISOString().split("T")[0]);
+                date1 = oneWeekAgo.toISOString().split("T")[0];
+                date2 = today.toISOString().split("T")[0];
+                fetchRevenueSharingData(date1, date2, navigate, partnerToken);
+                break;
+            case "past_1_month" :
+                const oneMonthAgo = new Date(today);
+                oneMonthAgo.setDate(today.getDate() - 30);
+                setFromDate(oneMonthAgo.toISOString().split("T")[0]);
+                setToDate(today.toISOString().split("T")[0]);
+                date1 = oneMonthAgo.toISOString().split("T")[0];
+                date2 = today.toISOString().split("T")[0];
+                fetchRevenueSharingData(date1, date2, navigate, partnerToken);
+                break;
+            case "past_mtd" :
+                const currentDate = new Date();
+                const year = currentDate.getFullYear();
+                const month = currentDate.getMonth() + 1; // Months are zero-based
+                setFromDate(`${year}-${month.toString().padStart(2, '0')}-01`);
+                setToDate(today.toISOString().split("T")[0]);
+                date1 = `${year}-${month.toString().padStart(2, '0')}-01`;
+                console.log(date1);
+                date2 = today.toISOString().split("T")[0];
+                fetchRevenueSharingData(date1, date2, navigate, partnerToken);
+                break;
         }
     }
 
@@ -256,11 +308,48 @@ const RevenueSharing = () => {
                             Fetch Data
                         </Button>
                     </Grid>
+                    <Grid>
+                        <Select
+                            value={customDateSelectedOption}
+                            onChange={(e) => {
+                                setCustomDateSelectedOption(e.target.value)
+                                handleCustomDateSelectedOption(e.target.value)
+                            }}
+                            sx={{ ml: 2, color: "#fff" }}
+                        >
+                            <MenuItem value="custom_time">
+                                <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
+                                    Custom Time
+                                </Typography>
+                            </MenuItem>
+                            <MenuItem value="past_1_day">
+                                <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
+                                    Past 1 Day
+                                </Typography>
+                            </MenuItem>
+                            <MenuItem value="past_1_week">
+                                <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
+                                    Past 1 Week
+                                </Typography>
+                            </MenuItem>
+                            <MenuItem value="past_1_month">
+                                <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
+                                    Past 1 Month
+                                </Typography>
+                            </MenuItem>
+                            <MenuItem value="past_mtd">
+                                <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
+                                    MTD(Month Till Date)
+                                </Typography>
+                            </MenuItem>
+                        </Select>
+                    </Grid>
                     {partnerData && <Grid>
                         <Select
                             value={partnerSelectedOption}
                             onChange={(e) => {
                                 setPartnerSelectedOption(e.target.value)
+                                handlePartnerSelectedOption(e.target.value)
                             }}
                             sx={{ ml: 2, color: "#fff" }}
                         >
