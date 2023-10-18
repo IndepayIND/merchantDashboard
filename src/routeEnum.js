@@ -5,7 +5,8 @@ const RouteEnum = {
     storeRoute: "store",
     kycRoute: "kyc",
     revenueReport: "revenue",
-    promoDataRoute: "promo-data"
+    promoDataRoute: "promo-data",
+    mistUploaderRoute: "mis-uploader"
 };
 const containsSubstring = (stringList, substring) =>
     stringList.some((str) => str.toLowerCase().includes(substring));

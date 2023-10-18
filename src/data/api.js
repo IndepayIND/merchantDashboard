@@ -173,6 +173,44 @@ export const fetchRevenueDataAPI = async (fromDate, toDate, option, optionValue,
     }
 };
 
+export const uploadMisAPI = async (formData, partnerSelectedOption, navigate) => {
+    try {
+        const accessToken = Cookies.get('accessToken');
+        const partnerSelectedOptionParam = partnerSelectedOption ? `&principalCredentialId=${partnerSelectedOption}` : '';
+
+        const response = await fetch(
+            `${baseUrl}/v0.1/tara/pgrouter/dashboard/mis-uploader?${partnerSelectedOptionParam}`,
+            {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+                body: formData,
+            }
+        );
+        if (response.status === 401) {
+            const accessToken = await refreshToken();
+            // Make a new request with the refreshed access token
+            if (accessToken) {
+                return await uploadMisAPI(navigate);
+            } else {
+                deleteAllCookies();
+                navigate('/login');
+            }
+            return ;
+        }
+
+        const data = await response.json();
+        if (response.ok) {
+            return data.data;
+        } else {
+            return data;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 export const loginAPI = async (username, password) => {
     try {
         const encodedKey = btoa(`${username}:${password}`);

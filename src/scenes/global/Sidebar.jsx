@@ -21,6 +21,7 @@ import StarRateIcon from '@mui/icons-material/StarRate';
 import PaidIcon from '@mui/icons-material/Paid';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import {containsSubstring, RouteEnum} from "../../routeEnum";
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -271,6 +272,15 @@ const Sidebar = () => {
                   title="Promotion Data"
                   icon={<StarRateIcon />}
                   to="/promotion-data"
+                  selected={selected}
+                  setSelected={setSelected}
+                  />
+              )}
+              {containsSubstring(dashboardRoute, RouteEnum.mistUploaderRoute) && (
+                  <Item
+                  title="MIS Uploader"
+                  icon={<UploadFileIcon />}
+                  to="/mis-uploader"
                   selected={selected}
                   setSelected={setSelected}
                   />

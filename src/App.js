@@ -22,6 +22,7 @@ import PromotionDetails from "./scenes/promotion";
 import StoreDetails from "./scenes/store";
 import RevenueSharingReport from "./scenes/revenue-sharing";
 import PromotionData from "./scenes/promotion-data/promotionData";
+import MISUploaderRoute from "./scenes/mis-uploader";
 import CreditCardSettlement from "./scenes/settlement/creditCard";
 import SDKChanges from "./scenes/sdkchanges";
 import {fetchPartnerDetailsAPI} from "./data/api";
@@ -101,6 +102,10 @@ function App() {
 
               {containsSubstring(dashboardRoute, RouteEnum.promoDataRoute) && (
                   <Route path="/promotion-data" element={<PromotionData />} />
+              )}
+
+              {containsSubstring(dashboardRoute, RouteEnum.mistUploaderRoute) && (
+                  <Route path="/mis-uploader" element={<MISUploaderRoute />} />
               )}
               <Route path="/sdk-changes" element={<SDKChanges />} />
               <Route path="/login" element={<Login />} />
