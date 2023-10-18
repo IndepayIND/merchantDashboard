@@ -12,9 +12,9 @@ const MISUploader = () => {
     const colors = tokens(theme.palette.mode);
     const [partnerData, setpartnerData] = useState([]);
     const [partnerSelectedOption, setPartnerSelectedOption] = useState("None");
+    const [file, setFile] = useState(null);
     const navigate = useNavigate();
 
-    const [file, setFile] = useState(null);
 
     const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
@@ -47,7 +47,14 @@ const MISUploader = () => {
             const formData = new FormData();
             formData.append('file', file);
             const data = await uploadMisAPI(formData, partnerSelectedOption, navigate);
-            console.log(data);
+            if (data && data.status === 'SUCCESS') {
+                alert('File Uploaded successfully.');
+                setPartnerSelectedOption("None");
+                setFile(null);
+            } else {
+                alert(data.errorDescription);
+            }
+
         } else {
             alert('Please select a CSV file and Partner from the Drop down before uploading.');
         }
