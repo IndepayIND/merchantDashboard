@@ -1,10 +1,9 @@
-import { Box, Button, Grid, IconButton, Typography } from "@mui/material";
-import { useState, useEffect } from "react";
-import { tokens } from "../../theme";
+import {Box, Button, Grid, IconButton, Typography, useTheme} from "@mui/material";
+import {useEffect, useState} from "react";
+import {tokens} from "../../theme";
 import Header from "../../components/Header";
-import { useTheme } from "@mui/material";
 import {fetchSettlementDataAPI} from "../../data/api";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 import Select from "@mui/material/Select";
@@ -76,13 +75,13 @@ const Settlement = (paymentMethodCategory) => {
     const [fromDate, setFromDate] = useState("");
     const [totalCount, setTotalCount] = useState([]);
     const [totalAmount, setTotalAmount] = useState([]);
-    const [totalPayID, setTotalPayID] = useState([]);
     const [toDate, setToDate] = useState("");
     const [searchText, setSearchText] = useState("");
     const [selectedOption, setSelectedOption] = useState("");
+    const [customDateSelectedOption, setCustomDateSelectedOption] = useState("custom_time");
     const navigate = useNavigate();
 
-    const fetchTransactionData = async (navigate) => {
+    const fetchTransactionData = async (fromDate, toDate, navigate) => {
         try {
             const data = await fetchSettlementDataAPI(fromDate, toDate, selectedOption, searchText, paymentMethodCategory,'', navigate);
             if (data && data.payments) {
@@ -90,11 +89,9 @@ const Settlement = (paymentMethodCategory) => {
                 setTotalAmount(data.totalAmount ? data.totalAmount
                     .toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0}) : 0);
                 setTotalCount(data.successCount);
-                setTotalPayID(data.mobileNumberCount);
             } else {
                 setTransactionData([]);
                 setTotalCount([]);
-                setTotalPayID([]);
             }
         } catch (error) {
             console.log(error);
@@ -122,13 +119,13 @@ const Settlement = (paymentMethodCategory) => {
             const day = currentDate.getDate();
             setToDate(`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`);
         }
-        fetchTransactionData(navigate);
+        fetchTransactionData(fromDate, toDate, navigate);
     };
 
     const handleSearch = () => {
         setFromDate('');
         setToDate('');
-        fetchTransactionData(navigate);
+        fetchTransactionData(fromDate, toDate, navigate);
     };
 
     const handleSearchKeyPress = (e) => {
@@ -136,6 +133,54 @@ const Settlement = (paymentMethodCategory) => {
             handleSearch();
         }
     };
+
+    async function handleCustomDateSelectedOption(value) {
+        const today = new Date();
+        let date1;
+        let date2;
+        switch (value) {
+            case "past_1_day" :
+                const oneDayAgo = new Date(today);
+                oneDayAgo.setDate(today.getDate() - 1);
+                setToDate(today.toISOString().split("T")[0]);
+                setFromDate(oneDayAgo.toISOString().split("T")[0]);
+                date1 = oneDayAgo.toISOString().split("T")[0];
+                date2 = today.toISOString().split("T")[0];
+                fetchTransactionData(date1, date2, navigate);
+                break;
+            case "past_1_week" :
+                const oneWeekAgo = new Date(today);
+                oneWeekAgo.setDate(today.getDate() - 7);
+                setFromDate(oneWeekAgo.toISOString().split("T")[0]);
+                setToDate(today.toISOString().split("T")[0]);
+                date1 = oneWeekAgo.toISOString().split("T")[0];
+                date2 = today.toISOString().split("T")[0];
+                fetchTransactionData(date1, date2, navigate);
+                break;
+            case "past_1_month" :
+                const oneMonthAgo = new Date(today);
+                oneMonthAgo.setDate(today.getDate() - 30);
+                setFromDate(oneMonthAgo.toISOString().split("T")[0]);
+                setToDate(today.toISOString().split("T")[0]);
+                date1 = oneMonthAgo.toISOString().split("T")[0];
+                date2 = today.toISOString().split("T")[0];
+                fetchTransactionData(date1, date2, navigate);
+                break;
+            case "past_mtd" :
+                const currentDate = new Date();
+                const year = currentDate.getFullYear();
+                const month = currentDate.getMonth() + 1; // Months are zero-based
+                setFromDate(`${year}-${month.toString().padStart(2, '0')}-01`);
+                setToDate(today.toISOString().split("T")[0]);
+                date1 = `${year}-${month.toString().padStart(2, '0')}-01`;
+                console.log(date1);
+                date2 = today.toISOString().split("T")[0];
+                fetchTransactionData(date1, date2, navigate);
+                break;
+            default:
+                return;
+        }
+    }
 
     return (
         <Box m="20px">
@@ -147,6 +192,18 @@ const Settlement = (paymentMethodCategory) => {
                 gap="20px"
             >
                 {/* ROW 1 */}
+                {paymentMethodCategory === "indepayFastCheckOut" && <Box
+                    gridColumn="span 2"
+                    backgroundColor={colors.primary[400]}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <StatBox
+                        title={totalAmount}
+                        subtitle="Total successful transaction"
+                    />
+                </Box>}
                 <Box
                     gridColumn="span 2"
                     backgroundColor={colors.primary[400]}
@@ -156,9 +213,21 @@ const Settlement = (paymentMethodCategory) => {
                 >
                     <StatBox
                         title={totalAmount}
-                        subtitle="Total Success Amount"
+                        subtitle="Total successful settlement"
                     />
                 </Box>
+                {paymentMethodCategory === "indepayFastCheckOut" && <Box
+                    gridColumn="span 2"
+                    backgroundColor={colors.primary[400]}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <StatBox
+                        title={totalCount}
+                        subtitle="#of successful transaction"
+                    />
+                </Box>}
                 <Box
                     gridColumn="span 2"
                     backgroundColor={colors.primary[400]}
@@ -168,19 +237,7 @@ const Settlement = (paymentMethodCategory) => {
                 >
                     <StatBox
                         title={totalCount}
-                        subtitle="Total Success Count"
-                    />
-                </Box>
-                <Box
-                    gridColumn="span 2"
-                    backgroundColor={colors.primary[400]}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                >
-                    <StatBox
-                        title={totalPayID}
-                        subtitle="Unique Pay IDs Interacted With System"
+                        subtitle="#of successful settlement"
                     />
                 </Box>
             </Box>
@@ -219,6 +276,42 @@ const Settlement = (paymentMethodCategory) => {
                             sx={{ bgcolor: colors.blueAccent[700], fontSize: "16px", color: colors.grey[100] }}>
                             Fetch Data
                         </Button>
+                    </Grid>
+                    <Grid>
+                        <Select
+                            value={customDateSelectedOption}
+                            onChange={(e) => {
+                                setCustomDateSelectedOption(e.target.value)
+                                handleCustomDateSelectedOption(e.target.value)
+                            }}
+                            sx={{ ml: 2, color: "#fff" }}
+                        >
+                            <MenuItem value="custom_time">
+                                <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
+                                    Custom Time
+                                </Typography>
+                            </MenuItem>
+                            <MenuItem value="past_1_day">
+                                <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
+                                    Past 1 Day
+                                </Typography>
+                            </MenuItem>
+                            <MenuItem value="past_1_week">
+                                <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
+                                    Past 1 Week
+                                </Typography>
+                            </MenuItem>
+                            <MenuItem value="past_1_month">
+                                <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
+                                    Past 1 Month
+                                </Typography>
+                            </MenuItem>
+                            <MenuItem value="past_mtd">
+                                <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
+                                    MTD(Month Till Date)
+                                </Typography>
+                            </MenuItem>
+                        </Select>
                     </Grid>
                 </Grid>
             </Box>
