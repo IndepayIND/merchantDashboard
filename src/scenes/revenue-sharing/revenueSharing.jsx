@@ -355,7 +355,7 @@ const RevenueSharing = () => {
                         >
                             <MenuItem value="None">
                                 <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
-                                    None
+                                    Select Merchant
                                 </Typography>
                             </MenuItem>
                             {partnerData.map((item) => (

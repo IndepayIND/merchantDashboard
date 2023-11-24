@@ -200,12 +200,7 @@ export const uploadMisAPI = async (formData, partnerSelectedOption, navigate) =>
             return ;
         }
 
-        const data = await response.json();
-        if (response.ok) {
-            return data.data;
-        } else {
-            return data;
-        }
+        return await response.json();
     } catch (error) {
         console.log(error);
     }
