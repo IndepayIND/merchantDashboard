@@ -62,6 +62,11 @@ export const columns = [
         flex: 0.4, minWidth: 200
     },
     {
+        field: "mobileNumber",
+        headerName: "subscriber_msisdn",
+        flex: 0.7, minWidth: 200
+    },
+    {
         field: "partnerRefId",
         headerName: "Partner_Ref_ID",
         flex: 1.4, minWidth: 300
