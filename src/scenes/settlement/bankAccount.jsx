@@ -1,7 +1,7 @@
 import Settlement from "./settlement";
 
 const BankAccountTable = () => {
-    return Settlement('indepayFastCheckOut');
+    return Settlement('directDebit');
 };
 
 export default BankAccountTable;

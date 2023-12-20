@@ -23,7 +23,7 @@ import StoreDetails from "./scenes/store";
 import RevenueSharingReport from "./scenes/revenue-sharing";
 import PromotionData from "./scenes/promotion-data/promotionData";
 import MISUploaderRoute from "./scenes/mis-uploader";
-import CreditCardSettlement from "./scenes/settlement/creditCard";
+import CardSettlement from "./scenes/settlement/card";
 import SDKChanges from "./scenes/sdkchanges";
 import {fetchPartnerDetailsAPI} from "./data/api";
 import {containsSubstring, RouteEnum} from "./routeEnum";
@@ -80,7 +80,7 @@ function App() {
               {containsSubstring(dashboardRoute, RouteEnum.settelementRoute) && (
                   <>
                     <Route path="/settlement/bank-account" element={<BankAccountSettlement />} />
-                    <Route path="/settlement/credit-card" element={<CreditCardSettlement />} />
+                    <Route path="/settlement/credit-card" element={<CardSettlement />} />
                   </>
               )}
 

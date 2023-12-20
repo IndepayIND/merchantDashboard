@@ -1,7 +1,7 @@
 import Settlement from "./settlement";
 
 const SettlementTable = () => {
-    return Settlement('creditCard');
+    return Settlement('card');
 };
 
 export default SettlementTable;

@@ -189,7 +189,7 @@ const Settlement = (paymentMethodCategory) => {
 
     return (
         <Box m="20px">
-            <Header title={paymentMethodCategory === "indepayFastCheckOut" ? "Bank Account Details" : "Card Details"} subtitle="List of Transaction" />
+            <Header title={paymentMethodCategory === "directDebit" ? "Bank Account Details" : "Card Details"} subtitle="List of Transaction" />
             <Box
                 display="grid"
                 gridTemplateColumns="repeat(12, 1fr)"
@@ -197,7 +197,7 @@ const Settlement = (paymentMethodCategory) => {
                 gap="20px"
             >
                 {/* ROW 1 */}
-                {paymentMethodCategory === "indepayFastCheckOut" && <Box
+                {paymentMethodCategory === "directDebit" && <Box
                     gridColumn="span 2"
                     backgroundColor={colors.primary[400]}
                     display="flex"
@@ -221,7 +221,7 @@ const Settlement = (paymentMethodCategory) => {
                         subtitle="Total successful settlement"
                     />
                 </Box>
-                {paymentMethodCategory === "indepayFastCheckOut" && <Box
+                {paymentMethodCategory === "directDebit" && <Box
                     gridColumn="span 2"
                     backgroundColor={colors.primary[400]}
                     display="flex"
@@ -403,7 +403,7 @@ const Settlement = (paymentMethodCategory) => {
                 <CustomDataGrid
                     rows={transactionData}
                     columns={columns}
-                    fileName={paymentMethodCategory === "indepayFastCheckOut" ? "REPORT_BANK_INDEPAY" : "REPORT_CARD_INDEPAY"}
+                    fileName={paymentMethodCategory === "directDebit" ? "REPORT_BANK_INDEPAY" : "REPORT_CARD_INDEPAY"}
                 />
             </Box>
         </Box>

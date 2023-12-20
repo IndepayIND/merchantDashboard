@@ -1,7 +1,7 @@
 import Transactions from "./transactions";
 
 const PaymentTable = () => {
-    return Transactions('creditCard');
+    return Transactions('card');
 };
 
 export default PaymentTable;
