@@ -17,6 +17,8 @@ import {ColorModeContext, useMode} from "./theme";
 import Cookies from "js-cookie";
 import Settings from "./scenes/setting";
 import BankAccountSettlement from "./scenes/settlement/bankAccount";
+import BankAccountRefund from "./scenes/refund/bankAccount";
+import Bill from "./scenes/bill";
 import KYCDetails from "./scenes/kyc";
 import PromotionDetails from "./scenes/promotion";
 import StoreDetails from "./scenes/store";
@@ -24,6 +26,7 @@ import RevenueSharingReport from "./scenes/revenue-sharing";
 import PromotionData from "./scenes/promotion-data/promotionData";
 import MISUploaderRoute from "./scenes/mis-uploader";
 import CardSettlement from "./scenes/settlement/card";
+import CardRefund from "./scenes/refund/card";
 import SDKChanges from "./scenes/sdkchanges";
 import {fetchPartnerDetailsAPI} from "./data/api";
 import {containsSubstring, RouteEnum} from "./routeEnum";
@@ -102,6 +105,19 @@ function App() {
 
               {containsSubstring(dashboardRoute, RouteEnum.promoDataRoute) && (
                   <Route path="/promotion-data" element={<PromotionData />} />
+              )}
+
+              {containsSubstring(dashboardRoute, RouteEnum.refundRoute) && (
+                  <>
+                    <Route path="/refund/bank-account" element={<BankAccountRefund />} />
+                    <Route path="/refund/credit-card" element={<CardRefund />} />
+                  </>
+              )}
+
+              {containsSubstring(dashboardRoute, RouteEnum.bill) && (
+                  <>
+                    <Route path="/bill" element={<Bill />} />
+                  </>
               )}
 
               {containsSubstring(dashboardRoute, RouteEnum.mistUploaderRoute) && (

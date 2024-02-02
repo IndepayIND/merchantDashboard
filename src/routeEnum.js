@@ -6,6 +6,8 @@ const RouteEnum = {
     kycRoute: "kyc",
     revenueReport: "revenue",
     promoDataRoute: "promo-data",
+    refundRoute: "refund",
+    bill: "bill",
     mistUploaderRoute: "mis-uploader"
 };
 const containsSubstring = (stringList, substring) =>

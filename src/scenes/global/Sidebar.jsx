@@ -22,6 +22,8 @@ import PaidIcon from '@mui/icons-material/Paid';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import {containsSubstring, RouteEnum} from "../../routeEnum";
 import UploadFileIcon from '@mui/icons-material/UploadFile';
+import ReplayCircleFilledIcon from '@mui/icons-material/ReplayCircleFilled';
+import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -267,6 +269,15 @@ const Sidebar = () => {
                   setSelected={setSelected}
                   />
               )}
+              {containsSubstring(dashboardRoute, RouteEnum.bill) && (
+                  <Item
+                  title="Bill Details"
+                  icon={<PhoneAndroidIcon />}
+                  to="/bill"
+                  selected={selected}
+                  setSelected={setSelected}
+                  />
+              )}
               {containsSubstring(dashboardRoute, RouteEnum.promoDataRoute) && (
                   <Item
                   title="Promotion Data"
@@ -275,6 +286,29 @@ const Sidebar = () => {
                   selected={selected}
                   setSelected={setSelected}
                   />
+              )}
+              {containsSubstring(dashboardRoute, RouteEnum.refundRoute) && (
+                  <SubMenu
+                      title="Refund"
+                      icon={<ReplayCircleFilledIcon />}
+                      selected={selected}
+                  >
+                      <Item
+                          title="Bank Account"
+                          icon={<AccountBalanceIcon/>}
+                          to="/refund/bank-account"
+                          selected={selected}
+                          setSelected={setSelected}
+                      />
+
+                      <Item
+                          title="Card"
+                          icon={<CreditCardIcon />}
+                          to="/refund/credit-card"
+                          selected={selected}
+                          setSelected={setSelected}
+                      />
+                  </SubMenu>
               )}
               {containsSubstring(dashboardRoute, RouteEnum.mistUploaderRoute) && (
                   <Item
