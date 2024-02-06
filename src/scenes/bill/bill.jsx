@@ -13,7 +13,6 @@ import CustomDataGrid from "../../components/CustomDataGrid";
 
 export const columns = [
     { field: "id", headerName: "Tara_Bill_ID", flex: 1.4 },
-    { field: "merchantName", headerName: "Merchant", flex: 0.5 },
     {
         field: "amount",
         headerName: "Amount",
@@ -64,11 +63,9 @@ export const columns = [
 const Bill = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    const [transactionData, setTransactionData] = useState([]);
+    const [billData, setBillData] = useState([]);
     const [fromDate, setFromDate] = useState("");
     const [totalCount, setTotalCount] = useState([]);
-    const [revenueAmountLast1Month, setRevenueAmountLast1Month] = useState([]);
-    const [revenueAmountMTD, setRevenueAmountMTD] = useState([]);
     const [totalAmount, setTotalAmount] = useState([]);
     const [toDate, setToDate] = useState("");
     const [searchText, setSearchText] = useState("");
@@ -81,12 +78,12 @@ const Bill = () => {
         try {
             const data = await fetchBillDataAPI(fromDate, toDate, selectedOption, searchText, '', navigate);
             if (data && data.payments) {
-                setTransactionData(data.payments);
+                setBillData(data.bill);
                 setTotalAmount(data.totalAmount ? data.totalAmount
                     .toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0}) : 0);
                 setTotalCount(data.successCount);
             } else {
-                setTransactionData([]);
+                setBillData([]);
                 setTotalCount([]);
             }
         } catch (error) {
@@ -348,7 +345,7 @@ const Bill = () => {
                 }}
             >
                 <CustomDataGrid
-                    rows={transactionData}
+                    rows={billData}
                     columns={columns}
                 />
             </Box>
