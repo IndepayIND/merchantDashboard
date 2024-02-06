@@ -12,51 +12,64 @@ import SearchIcon from "@mui/icons-material/Search";
 import CustomDataGrid from "../../components/CustomDataGrid";
 
 export const columns = [
-    { field: "id", headerName: "Tara_Bill_ID", flex: 1.4 },
+    {
+        field: "id",
+        headerName: "Tara_Bill_ID",
+        flex: 2,
+        minWidth: 300
+    },
     {
         field: "amount",
         headerName: "Amount",
-        flex: 0.4,
+        flex: 0.8,
+        minWidth: 150
     },
     {
         field: "totalAmount",
         headerName: "Total Amount Paid",
-        flex: 0.8,
+        flex: 1,
+        minWidth: 150
     },
     {
         field: "consumerNumber",
         headerName: "Mobile number",
-        flex: 0.75,
+        flex: 1.25,
+        minWidth: 150
     },
     {
         field: "status",
         headerName: "Status",
-        flex: 0.5,
+        flex: 1,
+        minWidth: 180
     },
     {
         field: "paymentId",
         headerName: "Tara Payment ID",
-        flex: 0.75,
+        flex: 2,
+        minWidth: 300
     },
     {
         field: "processingFee",
         headerName: "Processing Fee",
         flex: 0.65,
+        minWidth: 150
     },
     {
         field: "rajawaliInvoiceNo",
         headerName: "Invoice No",
-        flex: 1,
+        flex: 1,minWidth: 300
     },
     {
         field: "createdAt",
         headerName: "Created At",
         flex: 0.85,
+        minWidth: 200
     },
     {
         field: "successAt",
         headerName: "Success At",
         flex: 0.85,
+        minWidth: 200
     },
 ];
 
@@ -66,6 +79,7 @@ const Bill = () => {
     const [billData, setBillData] = useState([]);
     const [fromDate, setFromDate] = useState("");
     const [totalCount, setTotalCount] = useState([]);
+    const [totalTxnCount, setTotalTxnCount] = useState([]);
     const [totalAmount, setTotalAmount] = useState([]);
     const [toDate, setToDate] = useState("");
     const [searchText, setSearchText] = useState("");
@@ -77,14 +91,15 @@ const Bill = () => {
     const fetchBillData = async (fromDate, toDate, navigate) => {
         try {
             const data = await fetchBillDataAPI(fromDate, toDate, selectedOption, searchText, '', navigate);
-            if (data && data.payments) {
+            if (data && data.bill) {
                 setBillData(data.bill);
                 setTotalAmount(data.totalAmount ? data.totalAmount
                     .toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0}) : 0);
                 setTotalCount(data.successCount);
+                setTotalTxnCount(data.totalTxnCount);
             } else {
                 setBillData([]);
-                setTotalCount([]);
+                setTotalTxnCount([]);
             }
         } catch (error) {
             console.log(error);
@@ -97,6 +112,21 @@ const Bill = () => {
     }, []);
 
     const handleFetchData = () => {
+        if (!fromDate) {
+            const currentDate = new Date();
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth() + 1; // Months are zero-based
+            setFromDate(`${year}-${month.toString().padStart(2, '0')}-01`);
+        }
+
+        // Check if toDate is empty or undefined
+        if (!toDate) {
+            const currentDate = new Date();
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth() + 1; // Months are zero-based
+            const day = currentDate.getDate();
+            setToDate(`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`);
+        }
         fetchBillData(fromDate, toDate, navigate);
     };
 
@@ -192,6 +222,18 @@ const Bill = () => {
                     <StatBox
                         title={totalCount}
                         subtitle="#of successful transaction "
+                    />
+                </Box>
+                <Box
+                    gridColumn="span 3"
+                    backgroundColor={colors.primary[400]}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <StatBox
+                        title={totalTxnCount}
+                        subtitle="#of Attempted transaction "
                     />
                 </Box>
             </Box>
