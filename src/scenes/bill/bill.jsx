@@ -31,6 +31,12 @@ export const columns = [
         minWidth: 150
     },
     {
+        field: "paymentMethod",
+        headerName: "Payment Method",
+        flex: 1,
+        minWidth: 150
+    },
+    {
         field: "consumerNumber",
         headerName: "Mobile number",
         flex: 1.25,
