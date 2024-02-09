@@ -16,7 +16,7 @@ export const columns = [
         field: "id",
         headerName: "Tara_Bill_ID",
         flex: 2,
-        minWidth: 300
+        minWidth: 350
     },
     {
         field: "amount",
@@ -52,7 +52,7 @@ export const columns = [
         field: "paymentId",
         headerName: "Tara Payment ID",
         flex: 2,
-        minWidth: 300
+        minWidth: 350
     },
     {
         field: "processingFee",
@@ -63,7 +63,7 @@ export const columns = [
     {
         field: "rajawaliInvoiceNo",
         headerName: "Invoice No",
-        flex: 1,minWidth: 300
+        flex: 1,minWidth: 350
     },
     {
         field: "createdAt",
@@ -93,7 +93,6 @@ const Bill = () => {
     const [customDateSelectedOption, setCustomDateSelectedOption] = useState("custom_time");
     const navigate = useNavigate();
 
-
     const fetchBillData = async (fromDate, toDate, navigate) => {
         try {
             const data = await fetchBillDataAPI(fromDate, toDate, selectedOption, searchText, '', navigate);
@@ -118,21 +117,6 @@ const Bill = () => {
     }, []);
 
     const handleFetchData = () => {
-        if (!fromDate) {
-            const currentDate = new Date();
-            const year = currentDate.getFullYear();
-            const month = currentDate.getMonth() + 1; // Months are zero-based
-            setFromDate(`${year}-${month.toString().padStart(2, '0')}-01`);
-        }
-
-        // Check if toDate is empty or undefined
-        if (!toDate) {
-            const currentDate = new Date();
-            const year = currentDate.getFullYear();
-            const month = currentDate.getMonth() + 1; // Months are zero-based
-            const day = currentDate.getDate();
-            setToDate(`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`);
-        }
         fetchBillData(fromDate, toDate, navigate);
     };
 
@@ -231,7 +215,7 @@ const Bill = () => {
                     />
                 </Box>
                 <Box
-                    gridColumn="span 3"
+                    gridColumn="span 2"
                     backgroundColor={colors.primary[400]}
                     display="flex"
                     alignItems="center"
