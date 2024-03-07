@@ -12,47 +12,74 @@ import StatBox from "../../components/StatBox";
 import CustomDataGrid from "../../components/CustomDataGrid";
 
 export const columns = [
-    { field: "id", headerName: "Tara_Payment_ID", flex: 1.4 },
+    {
+        field: "id",
+        headerName: "Tara_Payment_ID",
+        flex: 1.4 ,
+        minWidth: 300},
     {
         field: "pgReferenceId",
         headerName: "Payment Gateway ID",
         flex: 1,
+        minWidth: 350
     },
-    { field: "merchantName", headerName: "Merchant", flex: 0.5 },
+    {
+        field: "merchantName",
+        headerName: "Merchant",
+        flex: 0.5,
+        minWidth: 100},
     {
         field: "amount",
         headerName: "Amount",
         flex: 0.4,
+        minWidth: 100
     },
     {
         field: "mobileNumber",
         headerName: "Mobile number",
         flex: 0.75,
+        minWidth: 200
     },
     {
         field: "paymentStatus",
         headerName: "Status",
         flex: 0.5,
+        minWidth: 100
     },
     {
         field: "paymentMethod",
         headerName: "Method",
         flex: 0.5,
+        minWidth: 200
     },
     {
         field: "partnerRefId",
         headerName: "Partner Ref ID",
         flex: 1,
+        minWidth: 300
+    },
+    {
+        field: "errorDescription",
+        headerName: "Error Description",
+        renderCell: (params) => (
+            <div style={{ whiteSpace: 'normal', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {params.value}
+            </div>
+        ), // Allow text to wrap
+        flex: 1,
+        minWidth: 200
     },
     {
         field: "createdAt",
         headerName: "Created At",
         flex: 0.85,
+        minWidth: 200
     },
     {
         field: "successAt",
         headerName: "Success At",
         flex: 0.85,
+        minWidth: 200
     },
 ];
 
