@@ -40,18 +40,42 @@ export const columns = [
         flex: 0.75,
         minWidth: 200
     },
+
     {
         field: "paymentStatus",
         headerName: "Status",
         flex: 0.5,
         minWidth: 100
     },
+
     {
         field: "paymentMethod",
         headerName: "Method",
         flex: 0.5,
         minWidth: 200
     },
+
+    {
+        field: "rtpPaymentChannel",
+        headerName: "Payment Channel",
+        flex: 0.5,
+        minWidth: 200
+    },
+
+    {
+        field: "rtpResponseCode",
+        headerName: "Response Code",
+        flex: 0.5,
+        minWidth: 200
+    },
+
+    {
+        field: "description",
+        headerName: "Description Code",
+        flex: 0.5,
+        minWidth: 200
+    },
+
     {
         field: "partnerRefId",
         headerName: "Partner Ref ID",
