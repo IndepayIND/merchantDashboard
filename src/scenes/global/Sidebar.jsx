@@ -278,6 +278,15 @@ const Sidebar = () => {
                   setSelected={setSelected}
                   />
               )}
+              {containsSubstring(dashboardRoute, RouteEnum.bill) && (
+                  <Item
+                  title="Affiliate Details"
+                  icon={<PhoneAndroidIcon />}
+                  to="/affiliate"
+                  selected={selected}
+                  setSelected={setSelected}
+                  />
+              )}
               {containsSubstring(dashboardRoute, RouteEnum.promoDataRoute) && (
                   <Item
                   title="Promotion Data"

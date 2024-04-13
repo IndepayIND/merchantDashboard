@@ -19,6 +19,7 @@ import Settings from "./scenes/setting";
 import BankAccountSettlement from "./scenes/settlement/bankAccount";
 import BankAccountRefund from "./scenes/refund/bankAccount";
 import Bill from "./scenes/bill";
+import Affiliate from "./scenes/affiliate";
 import KYCDetails from "./scenes/kyc";
 import PromotionDetails from "./scenes/promotion";
 import StoreDetails from "./scenes/store";
@@ -117,6 +118,7 @@ function App() {
               {containsSubstring(dashboardRoute, RouteEnum.bill) && (
                   <>
                     <Route path="/bill" element={<Bill />} />
+                    <Route path="/affiliate" element={<Affiliate />} />
                   </>
               )}
 
