@@ -56,8 +56,6 @@ const Affiliate = () => {
     const [affiliateData, setAffiliateData] = useState([]);
     const [fromDate, setFromDate] = useState("");
     const [totalCount, setTotalCount] = useState([]);
-    const [totalTxnCount, setTotalTxnCount] = useState([]);
-    const [totalAmount, setTotalAmount] = useState([]);
     const [toDate, setToDate] = useState("");
     const [searchText, setSearchText] = useState("");
     const [selectedOption, setSelectedOption] = useState("");
@@ -69,13 +67,9 @@ const Affiliate = () => {
             const data = await fetchAffiliateDataAPI(fromDate, toDate, selectedOption, searchText, '', navigate);
             if (data && data.affiliate) {
                 setAffiliateData(data.affiliate);
-                setTotalAmount(data.totalAmount ? data.totalAmount
-                    .toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0}) : 0);
                 setTotalCount(data.successCount);
-                setTotalTxnCount(data.totalTxnCount);
             } else {
                 setAffiliateData([]);
-                setTotalTxnCount([]);
             }
         } catch (error) {
             console.log(error);
@@ -169,32 +163,8 @@ const Affiliate = () => {
                     justifyContent="center"
                 >
                     <StatBox
-                        title={totalAmount}
-                        subtitle="Total successful transaction"
-                    />
-                </Box>
-                <Box
-                    gridColumn="span 2"
-                    backgroundColor={colors.primary[400]}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                >
-                    <StatBox
                         title={totalCount}
-                        subtitle="#of successful transaction "
-                    />
-                </Box>
-                <Box
-                    gridColumn="span 2"
-                    backgroundColor={colors.primary[400]}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                >
-                    <StatBox
-                        title={totalTxnCount}
-                        subtitle="#of Attempted transaction "
+                        subtitle="#of successful Onboarding "
                     />
                 </Box>
             </Box>
