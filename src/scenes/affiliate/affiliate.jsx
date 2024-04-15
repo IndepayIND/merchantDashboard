@@ -48,6 +48,12 @@ export const columns = [
         flex: 1,
         minWidth: 180
     },
+    {
+        field: "createdAt",
+        headerName: "Created At",
+        flex: 1,
+        minWidth: 150
+    },
 ];
 
 const Affiliate = () => {
