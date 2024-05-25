@@ -1,6 +1,8 @@
 const RouteEnum = {
     transactionRoute: "transactions",
     settelementRoute: "settlement",
+    makerRoute: "maker",
+    checkerRoute: "checker",
     promotionRoute: "promotion",
     storeRoute: "store",
     kycRoute: "kyc",

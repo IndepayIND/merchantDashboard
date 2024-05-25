@@ -31,6 +31,7 @@ import CardRefund from "./scenes/refund/card";
 import SDKChanges from "./scenes/sdkchanges";
 import {fetchPartnerDetailsAPI} from "./data/api";
 import {containsSubstring, RouteEnum} from "./routeEnum";
+import InitiateSettlement from "./scenes/initiateSettlement";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -90,6 +91,12 @@ function App() {
 
               {containsSubstring(dashboardRoute, RouteEnum.kycRoute) && (
                   <Route path="/kyc-details" element={<KYCDetails />} />
+              )}
+              {containsSubstring(dashboardRoute, RouteEnum.makerRoute) && (
+                  <>
+                    <Route path="/settlement/initiate-settlement" element={<InitiateSettlement />} />
+                    <Route path="/settlement/approve-settlement" element={<KYCDetails />} />
+                  </>
               )}
 
               {containsSubstring(dashboardRoute, RouteEnum.promotionRoute) && (

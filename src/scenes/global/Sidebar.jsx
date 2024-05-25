@@ -233,6 +233,32 @@ const Sidebar = () => {
                   />
                   </SubMenu>
               )}
+              {(containsSubstring(dashboardRoute, RouteEnum.makerRoute) || containsSubstring(dashboardRoute, RouteEnum.checkerRoute)) && (
+                  <SubMenu
+                      title="Settlement Config"
+                      icon={<HandshakeIcon/>}
+                      selected={selected}
+                  >
+                      {containsSubstring(dashboardRoute, RouteEnum.makerRoute) && (
+                          <Item
+                              title="Initiate Settlement"
+                              to="/settlement/initiate-settlement"
+                              selected={selected}
+                              setSelected={setSelected}
+                          />
+                      )}
+
+                      {containsSubstring(dashboardRoute, RouteEnum.checkerRoute) && (
+                          <Item
+                              title="Approve Settlement"
+                              to="/settlement/approve-settlement"
+                              selected={selected}
+                              setSelected={setSelected}
+                          />
+                      )}
+
+                  </SubMenu>
+              )}
               {containsSubstring(dashboardRoute, RouteEnum.kycRoute) && (
                   <Item
                   title="KYC Details"

@@ -88,7 +88,7 @@ export const columns = [
     },
 ];
 
-const KYC = (paymentMethodCategory) => {
+const KYC = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [transactionData, setTransactionData] = useState([]);
