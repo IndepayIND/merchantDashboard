@@ -95,6 +95,11 @@ function App() {
               {containsSubstring(dashboardRoute, RouteEnum.makerRoute) && (
                   <>
                     <Route path="/settlement/initiate-settlement" element={<InitiateSettlement />} />
+                  </>
+              )}
+
+              {containsSubstring(dashboardRoute, RouteEnum.checkerRoute) && (
+                  <>
                     <Route path="/settlement/approve-settlement" element={<KYCDetails />} />
                   </>
               )}

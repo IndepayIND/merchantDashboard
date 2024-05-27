@@ -2,7 +2,7 @@ import {Box, Button, Grid, IconButton, Typography, useTheme} from "@mui/material
 import {useEffect, useState} from "react";
 import {tokens} from "../../theme";
 import Header from "../../components/Header";
-import {fetchSettlementDataAPI} from "../../data/api";
+import {fetchInitiateSettlementDataAPI, sendInitiateSettlementDataAPI} from "../../data/api";
 import {useNavigate} from "react-router-dom";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
@@ -98,7 +98,7 @@ const InitiateSettlement = (paymentMethodCategory) => {
 
     const fetchTransactionData = async (fromDate, toDate, navigate) => {
         try {
-            const data = await fetchSettlementDataAPI(fromDate, toDate, selectedOption, searchText, paymentMethodCategory,'', navigate);
+            const data = await fetchInitiateSettlementDataAPI(fromDate, toDate, selectedOption, searchText, paymentMethodCategory,'', navigate);
             if (data && data.payments) {
                 setTransactionData(data.payments);
                 setTotalAmount(data.totalAmount ? data.totalAmount
@@ -107,6 +107,18 @@ const InitiateSettlement = (paymentMethodCategory) => {
             } else {
                 setTransactionData([]);
                 setTotalCount([]);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const sendInitiateSettlementData = async (selectedIds, navigate) => {
+        try {
+            const data = await sendInitiateSettlementDataAPI(selectedIds, navigate);
+            if (data) {
+                setSelectedIds([]);
+                await fetchTransactionData(fromDate, toDate, navigate);
             }
         } catch (error) {
             console.log(error);
@@ -417,6 +429,13 @@ const InitiateSettlement = (paymentMethodCategory) => {
                     sx={{ bgcolor: colors.blueAccent[700], fontSize: "16px", color: colors.grey[100] }}
                 >
                     {selectedIds.split(',').length === transactionData.length ? 'Deselect All' : 'Select All'}
+                </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={sendInitiateSettlementData}
+                    sx={{ bgcolor: colors.blueAccent[700], fontSize: "16px", color: colors.grey[100] }}
+                > Initiate Settlement
                 </Button>
                 <DataGrid
                     rows={transactionData}
