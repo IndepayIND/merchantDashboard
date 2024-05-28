@@ -32,6 +32,7 @@ import SDKChanges from "./scenes/sdkchanges";
 import {fetchPartnerDetailsAPI} from "./data/api";
 import {containsSubstring, RouteEnum} from "./routeEnum";
 import InitiateSettlement from "./scenes/initiateSettlement";
+import ApproveSettlement from "./scenes/approveSettlement";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -100,7 +101,7 @@ function App() {
 
               {containsSubstring(dashboardRoute, RouteEnum.checkerRoute) && (
                   <>
-                    <Route path="/settlement/approve-settlement" element={<KYCDetails />} />
+                    <Route path="/settlement/approve-settlement" element={<ApproveSettlement/>}/>
                   </>
               )}
 

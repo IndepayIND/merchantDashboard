@@ -269,18 +269,69 @@ export const fetchInitiateSettlementDataAPI = async (fromDate, toDate, option, o
     }
 };
 
-export const sendInitiateSettlementDataAPI = async (selectedIds, navigate) => {
+export const fetchApproveSettlementDataAPI = async (fromDate, toDate, option, optionValue, paymentMethodCategory, limit, navigate) => {
     try {
         const accessToken = Cookies.get('accessToken');
+        // Check if fromDate is empty or undefined
+        const fromDateParam = fromDate ? `&fromDate=${fromDate}` : '';
+
+        // Check if toDate is empty or undefined
+        const toDateParam = toDate ? `&toDate=${toDate}` : '';
+
+        // Check if option is empty or undefined
+        const optionParam = optionValue ? `&searchBy=${option}` : '';
+
+        // Check if optionValue is empty or undefined
+        const optionValueParam = optionValue ? `&searchValue=${optionValue}` : '';
+
+        // Check if paymentMethodCategory is empty or undefined
+        const paymentMethodCategoryParam = paymentMethodCategory ? `&paymentMethodCategory=${paymentMethodCategory}` : '';
+
+        // Check if paymentMethodCategory is empty or undefined
+        const limitParam = limit ? `&limit=${limit}` : '';
 
         const response = await fetch(
-            `${baseUrl}/v0.1/tara/pgrouter/dashboard/settlement/initiate?${fromDateParam}${toDateParam}${optionParam}${optionValueParam}${paymentMethodCategoryParam}${limitParam}`,
+            `${baseUrl}/v0.1/tara/pgrouter/dashboard/settlement/approve?${fromDateParam}${toDateParam}${optionParam}${optionValueParam}${paymentMethodCategoryParam}${limitParam}`,
             {
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
                 },
-                body:JSON.stringify({
-                    payemntIds: selectedIds
+            }
+        );
+        if (response.status === 401) {
+            const accessToken = await refreshToken();
+            // Make a new request with the refreshed access token
+            if (accessToken) {
+                return await fetchApproveSettlementDataAPI(fromDate, toDate, option, optionValue, paymentMethodCategory, limit, navigate);
+            } else {
+                deleteAllCookies();
+                navigate('/login');
+            }
+            return;
+        }
+
+        const data = await response.json();
+        if (response.ok) {
+            return data.data;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const sendInitiateSettlementDataAPI = async (selectedIds, navigate) => {
+    try {
+        const accessToken = Cookies.get('accessToken');
+        const response = await fetch(
+            `${baseUrl}/v0.1/tara/pgrouter/dashboard/settlement/initiate`,
+            {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify({
+                    paymentIds: selectedIds
                 })
             }
         );
@@ -294,6 +345,80 @@ export const sendInitiateSettlementDataAPI = async (selectedIds, navigate) => {
                 navigate('/login');
             }
             return ;
+        }
+
+        const data = await response.json();
+        if (response.ok) {
+            return data.data;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const sendApproveSettlementDataAPI = async (selectedIds, navigate) => {
+    try {
+        const accessToken = Cookies.get('accessToken');
+        const response = await fetch(
+            `${baseUrl}/v0.1/tara/pgrouter/dashboard/settlement/approve`,
+            {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify({
+                    paymentIds: selectedIds
+                })
+            }
+        );
+        if (response.status === 401) {
+            const accessToken = await refreshToken();
+            // Make a new request with the refreshed access token
+            if (accessToken) {
+                return await sendApproveSettlementDataAPI(selectedIds, navigate);
+            } else {
+                deleteAllCookies();
+                navigate('/login');
+            }
+            return;
+        }
+
+        const data = await response.json();
+        if (response.ok) {
+            return data.data;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const sendCancelSettlementDataAPI = async (selectedIds, navigate) => {
+    try {
+        const accessToken = Cookies.get('accessToken');
+        const response = await fetch(
+            `${baseUrl}/v0.1/tara/pgrouter/dashboard/settlement/approve/cncl`,
+            {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify({
+                    paymentIds: selectedIds
+                })
+            }
+        );
+        if (response.status === 401) {
+            const accessToken = await refreshToken();
+            // Make a new request with the refreshed access token
+            if (accessToken) {
+                return await sendApproveSettlementDataAPI(selectedIds, navigate);
+            } else {
+                deleteAllCookies();
+                navigate('/login');
+            }
+            return;
         }
 
         const data = await response.json();

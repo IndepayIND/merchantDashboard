@@ -2,19 +2,24 @@ import {Box, Button, Grid, IconButton, Typography, useTheme} from "@mui/material
 import {useEffect, useState} from "react";
 import {tokens} from "../../theme";
 import Header from "../../components/Header";
-import {fetchInitiateSettlementDataAPI, sendInitiateSettlementDataAPI} from "../../data/api";
+import {
+    fetchApproveSettlementDataAPI,
+    sendApproveSettlementDataAPI,
+    sendCancelSettlementDataAPI,
+} from "../../data/api";
 import {useNavigate} from "react-router-dom";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import {DataGrid} from "@mui/x-data-grid";
+import {CheckBox} from "@mui/icons-material";
 
 export const columns = [
-    { field: "id", headerName: "Tara_Payment_ID", minWidth: 300},
-    { field: "merchantName", headerName: "Merchant",  minWidth: 100},
-    { field: "merchantID", headerName: "Merchant_ID",  minWidth: 100},
-    { field: "subMerchantName", headerName: "Sub_Merchant_Name",  minWidth: 200},
+    {field: "id", headerName: "Tara_Payment_ID", minWidth: 300},
+    {field: "merchantName", headerName: "Merchant", minWidth: 100},
+    {field: "merchantID", headerName: "Merchant_ID", minWidth: 100},
+    {field: "subMerchantName", headerName: "Sub_Merchant_Name", minWidth: 200},
     {
         field: "amount",
         headerName: "Amount",
@@ -23,12 +28,12 @@ export const columns = [
     {
         field: "createdAt",
         headerName: "Txn_Date_Time",
-        flex: 0.85,  minWidth: 200
+        flex: 0.85, minWidth: 200
     },
     {
         field: "remarks",
         headerName: "Remarks",
-        flex: 1,minWidth: 200
+        flex: 1, minWidth: 200
     },
     {
         field: "paymentStatus",
@@ -67,7 +72,7 @@ export const columns = [
     },
 ];
 
-const InitiateSettlement = (paymentMethodCategory) => {
+const ApproveSettlement = (paymentMethodCategory) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [transactionData, setTransactionData] = useState([]);
@@ -82,26 +87,14 @@ const InitiateSettlement = (paymentMethodCategory) => {
 
     const [selectedIds, setSelectedIds] = useState('');
 
-    const handleSelectAllClick = () => {
-        if (selectedIds.split(',').length === transactionData.length) {
-            setSelectedIds('');
-        } else {
-            const allIds = transactionData.map((row) => row.id).join(',');
-            setSelectedIds(allIds);
-        }
-    };
-
-    const handleSelectionChange = (newSelectionModel) => {
-        setSelectedIds(newSelectionModel.join(','));
-    };
-
     const fetchTransactionData = async (fromDate, toDate, navigate) => {
         try {
-            const data = await fetchInitiateSettlementDataAPI(fromDate, toDate, selectedOption, searchText, paymentMethodCategory,'', navigate);
+            const data = await fetchApproveSettlementDataAPI(fromDate, toDate, selectedOption, searchText, paymentMethodCategory, '', navigate);
             if (data && data.payments) {
                 setTransactionData(data.payments);
+                setSelectedIds(transactionData.map((row) => row.id).join(','));
                 setTotalAmount(data.totalAmount ? data.totalAmount
-                    .toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0}) : 0);
+                    .toLocaleString('id-ID', {style: 'currency', currency: 'IDR', minimumFractionDigits: 0}) : 0);
                 setTotalCount(data.successCount);
             } else {
                 setTransactionData([]);
@@ -112,11 +105,21 @@ const InitiateSettlement = (paymentMethodCategory) => {
         }
     };
 
-    const sendInitiateSettlementData = async () => {
+    const sendApproveSettlementData = async () => {
         try {
-            const data = await sendInitiateSettlementDataAPI(selectedIds, navigate);
+            const data = await sendApproveSettlementDataAPI(selectedIds, navigate);
             if (data) {
-                setSelectedIds('');
+                await fetchTransactionData(fromDate, toDate, navigate);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const sendCancelSettlementData = async () => {
+        try {
+            const data = await sendCancelSettlementDataAPI(selectedIds, navigate);
+            if (data) {
                 await fetchTransactionData(fromDate, toDate, navigate);
             }
         } catch (error) {
@@ -128,6 +131,10 @@ const InitiateSettlement = (paymentMethodCategory) => {
         setSelectedOption("transactionId");
         handleFetchData();
     }, []);
+
+    useEffect(() => {
+        setSelectedIds(transactionData.map((row) => row.id).join(','))
+    }, [transactionData]);
 
     const handleFetchData = () => {
         if (!fromDate) {
@@ -210,7 +217,8 @@ const InitiateSettlement = (paymentMethodCategory) => {
 
     return (
         <Box m="20px">
-            <Header title="Initiate Settlement"/>
+            <Header title="Approve Settlement"/>
+
             <Box m="20px">
                 <Grid container spacing={2}>
                     <Grid item>
@@ -223,11 +231,11 @@ const InitiateSettlement = (paymentMethodCategory) => {
                             type="date"
                             value={fromDate}
                             onChange={(e) => setFromDate(e.target.value)}
-                            style={{ fontSize: "16px" }}
+                            style={{fontSize: "16px"}}
                         />
                     </Grid>
                     <Grid item>
-                        <Typography variant="subtitle1" style={{ fontSize: "16px" }}>
+                        <Typography variant="subtitle1" style={{fontSize: "16px"}}>
                             To:
                         </Typography>
                     </Grid>
@@ -236,14 +244,14 @@ const InitiateSettlement = (paymentMethodCategory) => {
                             type="date"
                             value={toDate}
                             onChange={(e) => setToDate(e.target.value)}
-                            style={{ fontSize: "16px" }}
+                            style={{fontSize: "16px"}}
                         />
                     </Grid>
                     <Grid item>
                         <Button
                             variant="contained"
                             onClick={handleFetchData}
-                            sx={{ bgcolor: colors.blueAccent[700], fontSize: "16px", color: colors.grey[100] }}>
+                            sx={{bgcolor: colors.blueAccent[700], fontSize: "16px", color: colors.grey[100]}}>
                             Fetch Data
                         </Button>
                     </Grid>
@@ -254,7 +262,7 @@ const InitiateSettlement = (paymentMethodCategory) => {
                                 setCustomDateSelectedOption(e.target.value)
                                 handleCustomDateSelectedOption(e.target.value)
                             }}
-                            sx={{ ml: 2, color: "#fff" }}
+                            sx={{ml: 2, color: "#fff"}}
                         >
                             <MenuItem value="custom_time">
                                 <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
@@ -295,35 +303,35 @@ const InitiateSettlement = (paymentMethodCategory) => {
                 <Select
                     value={selectedOption}
                     onChange={(e) => setSelectedOption(e.target.value)}
-                    sx={{ ml: 2, color: "#fff" }}
+                    sx={{ml: 2, color: "#fff"}}
                 >
                     <MenuItem value="transactionId">
                         <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
                             Transaction ID
                         </Typography>
-                        </MenuItem>
+                    </MenuItem>
                     <MenuItem value="mobileNumber">
                         <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
-                        Mobile Number
+                            Mobile Number
                         </Typography>
                     </MenuItem>
                     <MenuItem value="referenceId">
                         <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
-                        Reference ID
+                            Reference ID
                         </Typography>
                     </MenuItem>
                 </Select>
 
                 {/* Search input */}
                 <InputBase
-                    sx={{ ml: 2, flex: 1 }}
+                    sx={{ml: 2, flex: 1}}
                     placeholder="Search"
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
                     onKeyPress={handleSearchKeyPress}
                 />
-                <IconButton type="button" sx={{ p: 1 }} onClick={handleSearch}>
-                    <SearchIcon />
+                <IconButton type="button" sx={{p: 1}} onClick={handleSearch}>
+                    <SearchIcon/>
                 </IconButton>
             </Box>
 
@@ -368,28 +376,34 @@ const InitiateSettlement = (paymentMethodCategory) => {
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={handleSelectAllClick}
-                    sx={{ bgcolor: colors.blueAccent[700], fontSize: "16px", color: colors.grey[100] }}
-                >
-                    {selectedIds.split(',').length === transactionData.length ? 'Deselect All' : 'Select All'}
+                    onClick={sendApproveSettlementData}
+                    sx={{bgcolor: colors.blueAccent[700], fontSize: "16px", color: colors.grey[100]}}
+                > Approve Settlement
                 </Button>
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={sendInitiateSettlementData}
-                    sx={{ bgcolor: colors.blueAccent[700], fontSize: "16px", color: colors.grey[100] }}
-                > Initiate Settlement
+                    onClick={sendCancelSettlementData}
+                    sx={{bgcolor: colors.blueAccent[700], fontSize: "16px", color: colors.grey[100]}}
+                > Cancel Settlement
                 </Button>
                 <DataGrid
                     rows={transactionData}
                     columns={columns}
                     checkboxSelection
-                    onSelectionModelChange={handleSelectionChange}
-                    selectionModel={selectedIds.split(',').filter(id => id)}
+                    disableSelectionOnClick
+                    components={{
+                        BaseCheckbox: CustomCheckbox,
+                    }}
+                    selectionModel={selectedIds}
                 />
             </Box>
         </Box>
     );
 };
 
-export default InitiateSettlement;
+function CustomCheckbox(props) {
+    return <CheckBox {...props} checked={true} disabled/>;
+}
+
+export default ApproveSettlement;
