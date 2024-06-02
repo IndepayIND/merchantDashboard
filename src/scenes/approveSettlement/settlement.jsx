@@ -1,9 +1,23 @@
-import {Box, Button, Grid, IconButton, Typography, useTheme} from "@mui/material";
+import {
+    Box,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Grid,
+    IconButton,
+    Typography,
+    useTheme
+} from "@mui/material";
 import {useEffect, useState} from "react";
 import {tokens} from "../../theme";
 import Header from "../../components/Header";
 import {
+    fetchAllCredentialDetailsAPI,
     fetchApproveSettlementDataAPI,
+    sendApproveProceedSettlementDataAPI,
     sendApproveSettlementDataAPI,
     sendCancelSettlementDataAPI,
 } from "../../data/api";
@@ -41,6 +55,11 @@ export const columns = [
         flex: 0.5, minWidth: 150
     },
     {
+        field: "settlementStatus",
+        headerName: "Settlement_Status",
+        flex: 0.5, minWidth: 250
+    },
+    {
         field: "paymentMethod",
         headerName: "Transaction_Type",
         flex: 0.5, minWidth: 150
@@ -76,9 +95,13 @@ const ApproveSettlement = (paymentMethodCategory) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [transactionData, setTransactionData] = useState([]);
+    const [openProceed, setOpenProceed] = useState(false);
+    const [openCancel, setOpenCancel] = useState(false);
+    const [partnerData, setpartnerData] = useState([]);
+    const [partnerClientId, setPartnerClientId] = useState("");
+    const [proceedResult, setProceedResult] = useState(null);
+    const [partnerSelectedOption, setPartnerSelectedOption] = useState("None");
     const [fromDate, setFromDate] = useState("");
-    const [totalCount, setTotalCount] = useState([]);
-    const [totalAmount, setTotalAmount] = useState([]);
     const [toDate, setToDate] = useState("");
     const [searchText, setSearchText] = useState("");
     const [selectedOption, setSelectedOption] = useState("");
@@ -87,18 +110,35 @@ const ApproveSettlement = (paymentMethodCategory) => {
 
     const [selectedIds, setSelectedIds] = useState('');
 
-    const fetchTransactionData = async (fromDate, toDate, navigate) => {
+    const fetchAllPartnerDetails = async (navigate) => {
         try {
-            const data = await fetchApproveSettlementDataAPI(fromDate, toDate, selectedOption, searchText, paymentMethodCategory, '', navigate);
+            return await fetchAllCredentialDetailsAPI(navigate);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    async function handlePartnerSelectedOption(value) {
+        if (partnerData) {
+            const partnerObject = partnerData.find(item => item.id === value);
+            if (partnerObject) {
+                setPartnerClientId(partnerObject.clientId);
+                fetchTransactionData(fromDate, toDate, navigate, partnerObject.clientId);
+            } else {
+                setTransactionData([]);
+            }
+        }
+    }
+
+    const fetchTransactionData = async (fromDate, toDate, navigate, partnerClientId) => {
+        try {
+            const data = await fetchApproveSettlementDataAPI(fromDate, toDate, selectedOption, searchText,
+                paymentMethodCategory, '', navigate, partnerClientId);
             if (data && data.payments) {
                 setTransactionData(data.payments);
                 setSelectedIds(transactionData.map((row) => row.id).join(','));
-                setTotalAmount(data.totalAmount ? data.totalAmount
-                    .toLocaleString('id-ID', {style: 'currency', currency: 'IDR', minimumFractionDigits: 0}) : 0);
-                setTotalCount(data.successCount);
             } else {
                 setTransactionData([]);
-                setTotalCount([]);
             }
         } catch (error) {
             console.log(error);
@@ -107,20 +147,64 @@ const ApproveSettlement = (paymentMethodCategory) => {
 
     const sendApproveSettlementData = async () => {
         try {
-            const data = await sendApproveSettlementDataAPI(selectedIds, navigate);
+            const data = await sendApproveSettlementDataAPI(selectedIds, navigate, partnerClientId);
             if (data) {
-                await fetchTransactionData(fromDate, toDate, navigate);
+                return data;
             }
         } catch (error) {
             console.log(error);
         }
     };
 
+    const sendApproveProceedSettlementData = async () => {
+        try {
+            const data = await sendApproveProceedSettlementDataAPI(selectedIds, navigate, partnerClientId, proceedResult.finalAmount);
+            if (data) {
+                await fetchTransactionData(fromDate, toDate, navigate, partnerClientId);
+                return data;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleClickOpenProceed = () => {
+        setOpenProceed(true);
+    };
+
+    const handleClickOpenCancel = () => {
+        setOpenCancel(true);
+    };
+
+    const handleCloseProceed = () => {
+        setOpenProceed(false);
+    };
+
+    const handleCloseCancel = () => {
+        setOpenCancel(false);
+    };
+
+    const handleConfirmProceed = async () => {
+        setOpenProceed(false);
+        const result = await sendApproveSettlementData();
+        console.log(result);
+        setProceedResult(result);
+    };
+
+    const handleConfirmCancel = () => {
+        setOpenCancel(false);
+        sendCancelSettlementData();
+    };
+
+    const handleBack = () => {
+        setProceedResult(null);
+    };
+
     const sendCancelSettlementData = async () => {
         try {
-            const data = await sendCancelSettlementDataAPI(selectedIds, navigate);
+            const data = await sendCancelSettlementDataAPI(selectedIds, navigate, partnerClientId);
             if (data) {
-                await fetchTransactionData(fromDate, toDate, navigate);
+                await fetchTransactionData(fromDate, toDate, navigate, partnerClientId);
             }
         } catch (error) {
             console.log(error);
@@ -129,6 +213,9 @@ const ApproveSettlement = (paymentMethodCategory) => {
 
     useEffect(() => {
         setSelectedOption("transactionId");
+        fetchAllPartnerDetails().then(r => {
+            setpartnerData(r);
+        });
         handleFetchData();
     }, []);
 
@@ -152,13 +239,13 @@ const ApproveSettlement = (paymentMethodCategory) => {
             const day = currentDate.getDate();
             setToDate(`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`);
         }
-        fetchTransactionData(fromDate, toDate, navigate);
+        fetchTransactionData(fromDate, toDate, navigate, partnerClientId);
     };
 
     const handleSearch = () => {
         setFromDate('');
         setToDate('');
-        fetchTransactionData(fromDate, toDate, navigate);
+        fetchTransactionData(fromDate, toDate, navigate, partnerClientId);
     };
 
     const handleSearchKeyPress = (e) => {
@@ -179,7 +266,7 @@ const ApproveSettlement = (paymentMethodCategory) => {
                 setFromDate(oneDayAgo.toISOString().split("T")[0]);
                 date1 = oneDayAgo.toISOString().split("T")[0];
                 date2 = today.toISOString().split("T")[0];
-                fetchTransactionData(date1, date2, navigate);
+                fetchTransactionData(date1, date2, navigate, partnerClientId);
                 break;
             case "past_1_week" :
                 const oneWeekAgo = new Date(today);
@@ -188,7 +275,7 @@ const ApproveSettlement = (paymentMethodCategory) => {
                 setToDate(today.toISOString().split("T")[0]);
                 date1 = oneWeekAgo.toISOString().split("T")[0];
                 date2 = today.toISOString().split("T")[0];
-                fetchTransactionData(date1, date2, navigate);
+                fetchTransactionData(date1, date2, navigate, partnerClientId);
                 break;
             case "past_1_month" :
                 const oneMonthAgo = new Date(today);
@@ -197,7 +284,7 @@ const ApproveSettlement = (paymentMethodCategory) => {
                 setToDate(today.toISOString().split("T")[0]);
                 date1 = oneMonthAgo.toISOString().split("T")[0];
                 date2 = today.toISOString().split("T")[0];
-                fetchTransactionData(date1, date2, navigate);
+                fetchTransactionData(date1, date2, navigate, partnerClientId);
                 break;
             case "past_mtd" :
                 const currentDate = new Date();
@@ -208,7 +295,7 @@ const ApproveSettlement = (paymentMethodCategory) => {
                 date1 = `${year}-${month.toString().padStart(2, '0')}-01`;
                 console.log(date1);
                 date2 = today.toISOString().split("T")[0];
-                fetchTransactionData(date1, date2, navigate);
+                fetchTransactionData(date1, date2, navigate, partnerClientId);
                 break;
             default:
                 return;
@@ -291,6 +378,29 @@ const ApproveSettlement = (paymentMethodCategory) => {
                             </MenuItem>
                         </Select>
                     </Grid>
+                    {partnerData && <Grid>
+                        <Select
+                            value={partnerSelectedOption}
+                            onChange={(e) => {
+                                setPartnerSelectedOption(e.target.value)
+                                handlePartnerSelectedOption(e.target.value)
+                            }}
+                            sx={{ml: 2, color: "#fff"}}
+                        >
+                            <MenuItem value="None">
+                                <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
+                                    Select Merchant
+                                </Typography>
+                            </MenuItem>
+                            {partnerData.map((item) => (
+                                <MenuItem key={item.id} value={item.id}>
+                                    <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
+                                        {item.remarks}
+                                    </Typography>
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </Grid>}
                 </Grid>
             </Box>
 
@@ -336,7 +446,130 @@ const ApproveSettlement = (paymentMethodCategory) => {
             </Box>
 
             <Box
-                m="40px 0 0 0"
+                m="30px 0 0 0"
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between', // Space between buttons
+                    width: '100%', // Full width container
+                }}
+            >
+
+                {!proceedResult ? (
+                    <>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleClickOpenProceed}
+                            sx={{
+                                bgcolor: colors.blueAccent[700],
+                                fontWeight: 'bold',
+                                fontSize: "16px",
+                                color: colors.grey[100]
+                            }}
+                        >
+                            Proceed
+                        </Button>
+                        <Dialog
+                            open={openProceed}
+                            onClose={handleCloseProceed}
+                        >
+                            <DialogTitle>Confirm Proceed</DialogTitle>
+                            <DialogContent>
+                                <DialogContentText>
+                                    Are you sure you want to proceed with these payments?
+                                </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleCloseProceed} color="primary">
+                                    No
+                                </Button>
+                                <Button onClick={handleConfirmProceed} color="primary" autoFocus>
+                                    Yes
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleClickOpenCancel}
+                            sx={{
+                                bgcolor: colors.blueAccent[700],
+                                fontWeight: 'bold',
+                                fontSize: "16px",
+                                color: colors.grey[100]
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                        <Dialog
+                            open={openCancel}
+                            onClose={handleCloseCancel}
+                        >
+                            <DialogTitle>Confirm Cancellation</DialogTitle>
+                            <DialogContent>
+                                <DialogContentText>
+                                    Are you sure you want to cancel these payments?
+                                </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleCloseCancel} color="primary">
+                                    No
+                                </Button>
+                                <Button onClick={handleConfirmCancel} color="primary" autoFocus>
+                                    Yes
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+                    </>
+                ) : (
+                    <div>
+                        <Typography variant="h3">
+                            Final Amount: {proceedResult.finalAmount.toLocaleString('id-ID', {
+                            style: 'currency',
+                            currency: 'IDR',
+                            minimumFractionDigits: 0
+                        })}
+                        </Typography>
+                        <Typography variant="h3">
+                            Bank Account Number: {proceedResult.bankAccountNumber}
+                        </Typography>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleBack}
+                            sx={{
+                                bgcolor: colors.blueAccent[700],
+                                marginTop: '20px',
+                                marginBottom: '20px',
+                                fontWeight: 'bold',
+                                fontSize: "16px",
+                                color: colors.grey[100]
+                            }}
+                        >
+                            Back
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={sendApproveProceedSettlementData}
+                            sx={{
+                                bgcolor: colors.blueAccent[700],
+                                marginTop: '20px',
+                                marginBottom: '20px',
+                                fontWeight: 'bold',
+                                fontSize: "16px",
+                                color: colors.grey[100],
+                                marginLeft: '10px'
+                            }}
+                        >
+                            Settle
+                        </Button>
+                    </div>
+                )}
+            </Box>
+            <Box
+                m="5px 0 0 0"
                 height="75vh"
                 sx={{
                     // Apply font size to the table cells
@@ -373,20 +606,6 @@ const ApproveSettlement = (paymentMethodCategory) => {
                     },
                 }}
             >
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={sendApproveSettlementData}
-                    sx={{bgcolor: colors.blueAccent[700], fontSize: "16px", color: colors.grey[100]}}
-                > Approve Settlement
-                </Button>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={sendCancelSettlementData}
-                    sx={{bgcolor: colors.blueAccent[700], fontSize: "16px", color: colors.grey[100]}}
-                > Cancel Settlement
-                </Button>
                 <DataGrid
                     rows={transactionData}
                     columns={columns}

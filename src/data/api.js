@@ -219,7 +219,7 @@ export const fetchSettlementDataAPI = async (fromDate, toDate, option, optionVal
     }
 };
 
-export const fetchInitiateSettlementDataAPI = async (fromDate, toDate, option, optionValue, paymentMethodCategory, limit, navigate) => {
+export const fetchInitiateSettlementDataAPI = async (fromDate, toDate, option, optionValue, paymentMethodCategory, limit, navigate, partnerClientId) => {
     try {
         const accessToken = Cookies.get('accessToken');
         // Check if fromDate is empty or undefined
@@ -237,22 +237,26 @@ export const fetchInitiateSettlementDataAPI = async (fromDate, toDate, option, o
         // Check if paymentMethodCategory is empty or undefined
         const paymentMethodCategoryParam = paymentMethodCategory ? `&paymentMethodCategory=${paymentMethodCategory}` : '';
 
+        // Check if partnerClientId is empty or undefined
+        const partnerClientIdParam = partnerClientId ? `&partnerClientId=${partnerClientId}` : '';
+
         // Check if paymentMethodCategory is empty or undefined
         const limitParam = limit ? `&limit=${limit}` : '';
 
         const response = await fetch(
-            `${baseUrl}/v0.1/tara/pgrouter/dashboard/settlement/initiate?${fromDateParam}${toDateParam}${optionParam}${optionValueParam}${paymentMethodCategoryParam}${limitParam}`,
+            `${baseUrl}/v0.1/tara/pgrouter/dashboard/settlement/initiate?${fromDateParam}${toDateParam}${optionParam}${optionValueParam}${paymentMethodCategoryParam}${partnerClientIdParam}${limitParam}`,
             {
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
                 },
             }
         );
+
         if (response.status === 401) {
             const accessToken = await refreshToken();
             // Make a new request with the refreshed access token
             if (accessToken) {
-                return await fetchInitiateSettlementDataAPI(fromDate, toDate, option, optionValue, paymentMethodCategory, limit, navigate);
+                return await fetchInitiateSettlementDataAPI(fromDate, toDate, option, optionValue, paymentMethodCategory, limit, navigate, partnerClientId);
             } else {
                 deleteAllCookies();
                 navigate('/login');
@@ -269,7 +273,8 @@ export const fetchInitiateSettlementDataAPI = async (fromDate, toDate, option, o
     }
 };
 
-export const fetchApproveSettlementDataAPI = async (fromDate, toDate, option, optionValue, paymentMethodCategory, limit, navigate) => {
+export const fetchApproveSettlementDataAPI = async (fromDate, toDate, option, optionValue,
+                                                    paymentMethodCategory, limit, navigate, partnerClientId) => {
     try {
         const accessToken = Cookies.get('accessToken');
         // Check if fromDate is empty or undefined
@@ -287,11 +292,14 @@ export const fetchApproveSettlementDataAPI = async (fromDate, toDate, option, op
         // Check if paymentMethodCategory is empty or undefined
         const paymentMethodCategoryParam = paymentMethodCategory ? `&paymentMethodCategory=${paymentMethodCategory}` : '';
 
+        // Check if partnerClientId is empty or undefined
+        const partnerClientIdParam = partnerClientId ? `&partnerClientId=${partnerClientId}` : '';
+
         // Check if paymentMethodCategory is empty or undefined
         const limitParam = limit ? `&limit=${limit}` : '';
 
         const response = await fetch(
-            `${baseUrl}/v0.1/tara/pgrouter/dashboard/settlement/approve?${fromDateParam}${toDateParam}${optionParam}${optionValueParam}${paymentMethodCategoryParam}${limitParam}`,
+            `${baseUrl}/v0.1/tara/pgrouter/dashboard/settlement/approve?${fromDateParam}${toDateParam}${optionParam}${optionValueParam}${paymentMethodCategoryParam}${partnerClientIdParam}${limitParam}`,
             {
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
@@ -302,7 +310,7 @@ export const fetchApproveSettlementDataAPI = async (fromDate, toDate, option, op
             const accessToken = await refreshToken();
             // Make a new request with the refreshed access token
             if (accessToken) {
-                return await fetchApproveSettlementDataAPI(fromDate, toDate, option, optionValue, paymentMethodCategory, limit, navigate);
+                return await fetchApproveSettlementDataAPI(fromDate, toDate, option, optionValue, paymentMethodCategory, limit, navigate, partnerClientId);
             } else {
                 deleteAllCookies();
                 navigate('/login');
@@ -319,7 +327,7 @@ export const fetchApproveSettlementDataAPI = async (fromDate, toDate, option, op
     }
 };
 
-export const sendInitiateSettlementDataAPI = async (selectedIds, navigate) => {
+export const sendInitiateSettlementDataAPI = async (selectedIds, navigate, partnerClientId) => {
     try {
         const accessToken = Cookies.get('accessToken');
         const response = await fetch(
@@ -331,7 +339,8 @@ export const sendInitiateSettlementDataAPI = async (selectedIds, navigate) => {
                     'Authorization': `Bearer ${accessToken}`,
                 },
                 body: JSON.stringify({
-                    paymentIds: selectedIds
+                    paymentIds: selectedIds,
+                    partnerClientId: partnerClientId
                 })
             }
         );
@@ -356,7 +365,7 @@ export const sendInitiateSettlementDataAPI = async (selectedIds, navigate) => {
     }
 };
 
-export const sendApproveSettlementDataAPI = async (selectedIds, navigate) => {
+export const sendApproveSettlementDataAPI = async (selectedIds, navigate, partnerClientId) => {
     try {
         const accessToken = Cookies.get('accessToken');
         const response = await fetch(
@@ -368,7 +377,8 @@ export const sendApproveSettlementDataAPI = async (selectedIds, navigate) => {
                     'Authorization': `Bearer ${accessToken}`,
                 },
                 body: JSON.stringify({
-                    paymentIds: selectedIds
+                    paymentIds: selectedIds,
+                    partnerClientId: partnerClientId
                 })
             }
         );
@@ -393,7 +403,46 @@ export const sendApproveSettlementDataAPI = async (selectedIds, navigate) => {
     }
 };
 
-export const sendCancelSettlementDataAPI = async (selectedIds, navigate) => {
+export const sendApproveProceedSettlementDataAPI = async (selectedIds, navigate, partnerClientId, finalAmount) => {
+    try {
+        const accessToken = Cookies.get('accessToken');
+        const response = await fetch(
+            `${baseUrl}/v0.1/tara/pgrouter/dashboard/settlement/approve/prcd`,
+            {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify({
+                    paymentIds: selectedIds,
+                    partnerClientId: partnerClientId,
+                    finalAmount: finalAmount
+                })
+            }
+        );
+        if (response.status === 401) {
+            const accessToken = await refreshToken();
+            // Make a new request with the refreshed access token
+            if (accessToken) {
+                return await sendApproveSettlementDataAPI(selectedIds, navigate);
+            } else {
+                deleteAllCookies();
+                navigate('/login');
+            }
+            return;
+        }
+
+        const data = await response.json();
+        if (response.ok) {
+            return data.data;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const sendCancelSettlementDataAPI = async (selectedIds, navigate, partnerClientId) => {
     try {
         const accessToken = Cookies.get('accessToken');
         const response = await fetch(
@@ -405,7 +454,9 @@ export const sendCancelSettlementDataAPI = async (selectedIds, navigate) => {
                     'Authorization': `Bearer ${accessToken}`,
                 },
                 body: JSON.stringify({
-                    paymentIds: selectedIds
+                    paymentIds: selectedIds,
+
+                    partnerClientId: partnerClientId
                 })
             }
         );
@@ -413,7 +464,7 @@ export const sendCancelSettlementDataAPI = async (selectedIds, navigate) => {
             const accessToken = await refreshToken();
             // Make a new request with the refreshed access token
             if (accessToken) {
-                return await sendApproveSettlementDataAPI(selectedIds, navigate);
+                return await sendCancelSettlementDataAPI(selectedIds, navigate, partnerClientId);
             } else {
                 deleteAllCookies();
                 navigate('/login');

@@ -1,8 +1,24 @@
-import {Box, Button, Grid, IconButton, Typography, useTheme} from "@mui/material";
+import {
+    Box,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Grid,
+    IconButton,
+    Typography,
+    useTheme
+} from "@mui/material";
 import {useEffect, useState} from "react";
 import {tokens} from "../../theme";
 import Header from "../../components/Header";
-import {fetchInitiateSettlementDataAPI, sendInitiateSettlementDataAPI} from "../../data/api";
+import {
+    fetchAllCredentialDetailsAPI,
+    fetchInitiateSettlementDataAPI,
+    sendInitiateSettlementDataAPI
+} from "../../data/api";
 import {useNavigate} from "react-router-dom";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
@@ -28,11 +44,16 @@ export const columns = [
     {
         field: "remarks",
         headerName: "Remarks",
-        flex: 1,minWidth: 200
+        flex: 1, minWidth: 200
     },
     {
         field: "paymentStatus",
         headerName: "Transaction_Status",
+        flex: 0.5, minWidth: 150
+    },
+    {
+        field: "settlementStatus",
+        headerName: "Settlement_Status",
         flex: 0.5, minWidth: 150
     },
     {
@@ -71,9 +92,11 @@ const InitiateSettlement = (paymentMethodCategory) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [transactionData, setTransactionData] = useState([]);
+    const [openProceed, setOpenProceed] = useState(false);
+    const [partnerData, setpartnerData] = useState([]);
+    const [partnerClientId, setPartnerClientId] = useState("");
+    const [partnerSelectedOption, setPartnerSelectedOption] = useState("None");
     const [fromDate, setFromDate] = useState("");
-    const [totalCount, setTotalCount] = useState([]);
-    const [totalAmount, setTotalAmount] = useState([]);
     const [toDate, setToDate] = useState("");
     const [searchText, setSearchText] = useState("");
     const [selectedOption, setSelectedOption] = useState("");
@@ -91,33 +114,62 @@ const InitiateSettlement = (paymentMethodCategory) => {
         }
     };
 
+    const fetchAllPartnerDetails = async (navigate) => {
+        try {
+            return await fetchAllCredentialDetailsAPI(navigate);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    async function handlePartnerSelectedOption(value) {
+        if (partnerData) {
+            const partnerObject = partnerData.find(item => item.id === value);
+            if (partnerObject) {
+                setPartnerClientId(partnerObject.clientId);
+                fetchTransactionData(fromDate, toDate, navigate, partnerObject.clientId);
+            } else {
+                setTransactionData([]);
+            }
+        }
+    }
+
     const handleSelectionChange = (newSelectionModel) => {
         setSelectedIds(newSelectionModel.join(','));
     };
 
-    const fetchTransactionData = async (fromDate, toDate, navigate) => {
+    const fetchTransactionData = async (fromDate, toDate, navigate, partnerClientId) => {
         try {
-            const data = await fetchInitiateSettlementDataAPI(fromDate, toDate, selectedOption, searchText, paymentMethodCategory,'', navigate);
+            const data = await fetchInitiateSettlementDataAPI(fromDate, toDate, selectedOption, searchText, paymentMethodCategory, '', navigate, partnerClientId);
             if (data && data.payments) {
                 setTransactionData(data.payments);
-                setTotalAmount(data.totalAmount ? data.totalAmount
-                    .toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0}) : 0);
-                setTotalCount(data.successCount);
             } else {
                 setTransactionData([]);
-                setTotalCount([]);
             }
         } catch (error) {
             console.log(error);
         }
     };
 
+    const handleClickOpenProceed = () => {
+        setOpenProceed(true);
+    };
+
+    const handleCloseProceed = () => {
+        setOpenProceed(false);
+    };
+
+    const handleConfirmProceed = () => {
+        setOpenProceed(false);
+        sendInitiateSettlementData();
+    };
+
     const sendInitiateSettlementData = async () => {
         try {
-            const data = await sendInitiateSettlementDataAPI(selectedIds, navigate);
+            const data = await sendInitiateSettlementDataAPI(selectedIds, navigate, partnerClientId);
             if (data) {
                 setSelectedIds('');
-                await fetchTransactionData(fromDate, toDate, navigate);
+                await fetchTransactionData(fromDate, toDate, navigate, partnerClientId);
             }
         } catch (error) {
             console.log(error);
@@ -126,6 +178,9 @@ const InitiateSettlement = (paymentMethodCategory) => {
 
     useEffect(() => {
         setSelectedOption("transactionId");
+        fetchAllPartnerDetails().then(r => {
+            setpartnerData(r);
+        });
         handleFetchData();
     }, []);
 
@@ -145,13 +200,13 @@ const InitiateSettlement = (paymentMethodCategory) => {
             const day = currentDate.getDate();
             setToDate(`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`);
         }
-        fetchTransactionData(fromDate, toDate, navigate);
+        fetchTransactionData(fromDate, toDate, navigate, partnerClientId);
     };
 
     const handleSearch = () => {
         setFromDate('');
         setToDate('');
-        fetchTransactionData(fromDate, toDate, navigate);
+        fetchTransactionData(fromDate, toDate, navigate, partnerClientId);
     };
 
     const handleSearchKeyPress = (e) => {
@@ -172,7 +227,7 @@ const InitiateSettlement = (paymentMethodCategory) => {
                 setFromDate(oneDayAgo.toISOString().split("T")[0]);
                 date1 = oneDayAgo.toISOString().split("T")[0];
                 date2 = today.toISOString().split("T")[0];
-                fetchTransactionData(date1, date2, navigate);
+                fetchTransactionData(date1, date2, navigate, partnerClientId);
                 break;
             case "past_1_week" :
                 const oneWeekAgo = new Date(today);
@@ -181,7 +236,7 @@ const InitiateSettlement = (paymentMethodCategory) => {
                 setToDate(today.toISOString().split("T")[0]);
                 date1 = oneWeekAgo.toISOString().split("T")[0];
                 date2 = today.toISOString().split("T")[0];
-                fetchTransactionData(date1, date2, navigate);
+                fetchTransactionData(date1, date2, navigate, partnerClientId);
                 break;
             case "past_1_month" :
                 const oneMonthAgo = new Date(today);
@@ -190,7 +245,7 @@ const InitiateSettlement = (paymentMethodCategory) => {
                 setToDate(today.toISOString().split("T")[0]);
                 date1 = oneMonthAgo.toISOString().split("T")[0];
                 date2 = today.toISOString().split("T")[0];
-                fetchTransactionData(date1, date2, navigate);
+                fetchTransactionData(date1, date2, navigate, partnerClientId);
                 break;
             case "past_mtd" :
                 const currentDate = new Date();
@@ -201,7 +256,7 @@ const InitiateSettlement = (paymentMethodCategory) => {
                 date1 = `${year}-${month.toString().padStart(2, '0')}-01`;
                 console.log(date1);
                 date2 = today.toISOString().split("T")[0];
-                fetchTransactionData(date1, date2, navigate);
+                fetchTransactionData(date1, date2, navigate, partnerClientId);
                 break;
             default:
                 return;
@@ -283,6 +338,29 @@ const InitiateSettlement = (paymentMethodCategory) => {
                             </MenuItem>
                         </Select>
                     </Grid>
+                    {partnerData && <Grid>
+                        <Select
+                            value={partnerSelectedOption}
+                            onChange={(e) => {
+                                setPartnerSelectedOption(e.target.value)
+                                handlePartnerSelectedOption(e.target.value)
+                            }}
+                            sx={{ml: 2, color: "#fff"}}
+                        >
+                            <MenuItem value="None">
+                                <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
+                                    Select Merchant
+                                </Typography>
+                            </MenuItem>
+                            {partnerData.map((item) => (
+                                <MenuItem key={item.id} value={item.id}>
+                                    <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
+                                        {item.remarks}
+                                    </Typography>
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </Grid>}
                 </Grid>
             </Box>
 
@@ -322,13 +400,66 @@ const InitiateSettlement = (paymentMethodCategory) => {
                     onChange={(e) => setSearchText(e.target.value)}
                     onKeyPress={handleSearchKeyPress}
                 />
-                <IconButton type="button" sx={{ p: 1 }} onClick={handleSearch}>
-                    <SearchIcon />
+                <IconButton type="button" sx={{p: 1}} onClick={handleSearch}>
+                    <SearchIcon/>
                 </IconButton>
             </Box>
 
             <Box
-                m="40px 0 0 0"
+                m="30px 0 0 0"
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between', // Space between buttons
+                    width: '100%', // Full width container
+                }}
+            >
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleSelectAllClick}
+                    sx={{
+                        bgcolor: colors.blueAccent[700],
+                        fontWeight: 'bold',
+                        fontSize: "18px",
+                        color: colors.grey[100]
+                    }}
+                >
+                    {selectedIds.split(',').length === transactionData.length ? 'Deselect All' : 'Select All'}
+                </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleClickOpenProceed}
+                    sx={{
+                        bgcolor: colors.blueAccent[700],
+                        fontWeight: 'bold',
+                        fontSize: "18px",
+                        color: colors.grey[100]
+                    }}
+                > Proceed
+                </Button>
+                <Dialog
+                    open={openProceed}
+                    onClose={handleCloseProceed}
+                >
+                    <DialogTitle>Confirm Proceed</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Are you sure you want to proceed with these payments?
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCloseProceed} color="primary">
+                            No
+                        </Button>
+                        <Button onClick={handleConfirmProceed} color="primary" autoFocus>
+                            Yes
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </Box>
+            <Box
+                m="5px 0 0 0"
                 height="75vh"
                 sx={{
                     // Apply font size to the table cells
@@ -365,21 +496,6 @@ const InitiateSettlement = (paymentMethodCategory) => {
                     },
                 }}
             >
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleSelectAllClick}
-                    sx={{ bgcolor: colors.blueAccent[700], fontSize: "16px", color: colors.grey[100] }}
-                >
-                    {selectedIds.split(',').length === transactionData.length ? 'Deselect All' : 'Select All'}
-                </Button>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={sendInitiateSettlementData}
-                    sx={{ bgcolor: colors.blueAccent[700], fontSize: "16px", color: colors.grey[100] }}
-                > Initiate Settlement
-                </Button>
                 <DataGrid
                     rows={transactionData}
                     columns={columns}

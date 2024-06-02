@@ -29,11 +29,16 @@ export const columns = [
     {
         field: "remarks",
         headerName: "Remarks",
-        flex: 1,minWidth: 200
+        flex: 1, minWidth: 200
     },
     {
         field: "paymentStatus",
         headerName: "Transaction_Status",
+        flex: 0.5, minWidth: 150
+    },
+    {
+        field: "settlementStatus",
+        headerName: "Settlement_Status",
         flex: 0.5, minWidth: 150
     },
     {

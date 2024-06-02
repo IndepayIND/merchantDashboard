@@ -142,14 +142,14 @@ const Sidebar = () => {
             </Box>
           )}
 
-          <Box paddingLeft={isCollapsed ? undefined : "10%"}>
-            <Item
-              title="Dashboard"
-              to="/"
-              icon={<HomeOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+          <Box paddingLeft={isCollapsed ? undefined : "5%"}>
+              <Item
+                  title="Dashboard"
+                  to="/"
+                  icon={<HomeOutlinedIcon/>}
+                  selected={selected}
+                  setSelected={setSelected}
+              />
 
               {containsSubstring(dashboardRoute, RouteEnum.transactionRoute) && (
                   <SubMenu
@@ -200,42 +200,20 @@ const Sidebar = () => {
                       selected={selected}
                       setSelected={setSelected}
                   />
-                  <Item
-                      title="Net Banking"
-                      to="/transactions/netbanking"
-                      icon={<LanguageIcon/>}
-                      selected={selected}
-                      setSelected={setSelected}
-                  />
-              </SubMenu>
-              )}
-
-              {containsSubstring(dashboardRoute, RouteEnum.settelementRoute) && (
-                  <SubMenu
-                  title="Settlement Report"
-                  icon={<HandshakeIcon />}
-                  selected={selected}
-                  >
-                  <Item
-                  title="Bank Account"
-                  icon={<AccountBalanceIcon/>}
-                  to="/settlement/bank-account"
-                  selected={selected}
-                  setSelected={setSelected}
-                  />
-
-                  <Item
-                  title="Card"
-                  icon={<CreditCardIcon />}
-                  to="/settlement/credit-card"
-                  selected={selected}
-                  setSelected={setSelected}
-                  />
+                      <Item
+                          title="Net Banking"
+                          to="/transactions/netbanking"
+                          icon={<LanguageIcon/>}
+                          selected={selected}
+                          setSelected={setSelected}
+                      />
                   </SubMenu>
               )}
-              {(containsSubstring(dashboardRoute, RouteEnum.makerRoute) || containsSubstring(dashboardRoute, RouteEnum.checkerRoute)) && (
+              {(containsSubstring(dashboardRoute, RouteEnum.makerRoute)
+                  || containsSubstring(dashboardRoute, RouteEnum.checkerRoute)
+                  || containsSubstring(dashboardRoute, RouteEnum.settelementRoute)) && (
                   <SubMenu
-                      title="Settlement Config"
+                      title="Settlement"
                       icon={<HandshakeIcon/>}
                       selected={selected}
                   >
@@ -255,6 +233,29 @@ const Sidebar = () => {
                               selected={selected}
                               setSelected={setSelected}
                           />
+                      )}
+                      {containsSubstring(dashboardRoute, RouteEnum.settelementRoute) && (
+                          <SubMenu
+                              title="Settlement Report"
+                              icon={<HandshakeIcon/>}
+                              selected={selected}
+                          >
+                              <Item
+                                  title="Bank Account"
+                                  icon={<AccountBalanceIcon/>}
+                                  to="/settlement/bank-account"
+                                  selected={selected}
+                                  setSelected={setSelected}
+                              />
+
+                              <Item
+                                  title="Card"
+                                  icon={<CreditCardIcon/>}
+                                  to="/settlement/credit-card"
+                                  selected={selected}
+                                  setSelected={setSelected}
+                              />
+                          </SubMenu>
                       )}
 
                   </SubMenu>
