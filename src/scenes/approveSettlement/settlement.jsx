@@ -100,6 +100,7 @@ const ApproveSettlement = (paymentMethodCategory) => {
     const [partnerData, setpartnerData] = useState([]);
     const [partnerClientId, setPartnerClientId] = useState("");
     const [proceedResult, setProceedResult] = useState(null);
+    const [settleResult, setSettleResult] = useState(null);
     const [partnerSelectedOption, setPartnerSelectedOption] = useState("None");
     const [fromDate, setFromDate] = useState("");
     const [toDate, setToDate] = useState("");
@@ -191,6 +192,11 @@ const ApproveSettlement = (paymentMethodCategory) => {
         setProceedResult(result);
     };
 
+    const handleFinalSettleProceed = async () => {
+        const result = await sendApproveProceedSettlementData();
+        setSettleResult(result);
+    };
+
     const handleConfirmCancel = () => {
         setOpenCancel(false);
         sendCancelSettlementData();
@@ -198,6 +204,7 @@ const ApproveSettlement = (paymentMethodCategory) => {
 
     const handleBack = () => {
         setProceedResult(null);
+        setSettleResult(null);
     };
 
     const sendCancelSettlementData = async () => {
@@ -454,7 +461,7 @@ const ApproveSettlement = (paymentMethodCategory) => {
                 }}
             >
 
-                {!proceedResult ? (
+                {!proceedResult && !settleResult ? (
                     <>
                         <Button
                             variant="contained"
@@ -480,10 +487,12 @@ const ApproveSettlement = (paymentMethodCategory) => {
                                 </DialogContentText>
                             </DialogContent>
                             <DialogActions>
-                                <Button onClick={handleCloseProceed} color="primary">
+                                <Button onClick={handleCloseProceed}
+                                        sx={{color: 'white', bgcolor: colors.blueAccent[700]}}>
                                     No
                                 </Button>
-                                <Button onClick={handleConfirmProceed} color="primary" autoFocus>
+                                <Button onClick={handleConfirmProceed}
+                                        sx={{color: 'white', bgcolor: colors.blueAccent[700]}} autoFocus>
                                     Yes
                                 </Button>
                             </DialogActions>
@@ -513,16 +522,18 @@ const ApproveSettlement = (paymentMethodCategory) => {
                                 </DialogContentText>
                             </DialogContent>
                             <DialogActions>
-                                <Button onClick={handleCloseCancel} color="primary">
+                                <Button onClick={handleCloseCancel}
+                                        sx={{color: 'white', bgcolor: colors.blueAccent[700]}}>
                                     No
                                 </Button>
-                                <Button onClick={handleConfirmCancel} color="primary" autoFocus>
+                                <Button onClick={handleConfirmCancel}
+                                        sx={{color: 'white', bgcolor: colors.blueAccent[700]}} autoFocus>
                                     Yes
                                 </Button>
                             </DialogActions>
                         </Dialog>
                     </>
-                ) : (
+                ) : proceedResult && !settleResult ? (
                     <div>
                         <Typography variant="h3">
                             Final Amount: {proceedResult.finalAmount.toLocaleString('id-ID', {
@@ -532,7 +543,13 @@ const ApproveSettlement = (paymentMethodCategory) => {
                         })}
                         </Typography>
                         <Typography variant="h3">
-                            Bank Account Number: {proceedResult.bankAccountNumber}
+                            Bank Account Number of Merchant: {proceedResult.settlementBankDetails.accountNo}
+                        </Typography>
+                        <Typography variant="h3">
+                            Bank Code of Merchant: {proceedResult.settlementBankDetails.bankCode}
+                        </Typography>
+                        <Typography variant="h3">
+                            Bank Account Type of Merchant: {proceedResult.settlementBankDetails.accountType}
                         </Typography>
                         <Button
                             variant="contained"
@@ -552,7 +569,7 @@ const ApproveSettlement = (paymentMethodCategory) => {
                         <Button
                             variant="contained"
                             color="primary"
-                            onClick={sendApproveProceedSettlementData}
+                            onClick={handleFinalSettleProceed}
                             sx={{
                                 bgcolor: colors.blueAccent[700],
                                 marginTop: '20px',
@@ -564,6 +581,25 @@ const ApproveSettlement = (paymentMethodCategory) => {
                             }}
                         >
                             Settle
+                        </Button>
+                    </div>
+                ) : (
+                    <div>
+                        <Typography variant="h3">
+                            Settle Response: {settleResult.message ? settleResult.message : settleResult.status}
+                        </Typography>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleBack}
+                            sx={{
+                                bgcolor: colors.blueAccent[700],
+                                fontWeight: 'bold',
+                                fontSize: "16px",
+                                color: colors.grey[100]
+                            }}
+                        >
+                            Back
                         </Button>
                     </div>
                 )}

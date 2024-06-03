@@ -449,10 +449,11 @@ const InitiateSettlement = (paymentMethodCategory) => {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleCloseProceed} color="primary">
+                        <Button onClick={handleCloseProceed} sx={{color: 'white', bgcolor: colors.blueAccent[700]}}>
                             No
                         </Button>
-                        <Button onClick={handleConfirmProceed} color="primary" autoFocus>
+                        <Button onClick={handleConfirmProceed} sx={{color: 'white', bgcolor: colors.blueAccent[700]}}
+                                autoFocus>
                             Yes
                         </Button>
                     </DialogActions>

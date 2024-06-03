@@ -434,9 +434,7 @@ export const sendApproveProceedSettlementDataAPI = async (selectedIds, navigate,
         }
 
         const data = await response.json();
-        if (response.ok) {
-            return data.data;
-        }
+        return data;
     } catch (error) {
         console.log(error);
     }
