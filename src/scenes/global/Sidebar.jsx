@@ -210,7 +210,7 @@ const Sidebar = () => {
                   </SubMenu>
               )}
               {(containsSubstring(dashboardRoute, RouteEnum.makerRoute)
-                  || containsSubstring(dashboardRoute, RouteEnum.checkerRoute)
+                  || containsSubstring(dashboardRoute, RouteEnum.approverRoute)
                   || containsSubstring(dashboardRoute, RouteEnum.settelementRoute)) && (
                   <SubMenu
                       title="Settlement"
@@ -226,7 +226,7 @@ const Sidebar = () => {
                           />
                       )}
 
-                      {containsSubstring(dashboardRoute, RouteEnum.checkerRoute) && (
+                      {containsSubstring(dashboardRoute, RouteEnum.approverRoute) && (
                           <Item
                               title="Approve Settlement"
                               to="/settlement/approve-settlement"

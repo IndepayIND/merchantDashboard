@@ -7,7 +7,6 @@ import {
     DialogContentText,
     DialogTitle,
     Grid,
-    IconButton,
     Typography,
     useTheme
 } from "@mui/material";
@@ -22,8 +21,6 @@ import {
     sendCancelSettlementDataAPI,
 } from "../../data/api";
 import {useNavigate} from "react-router-dom";
-import InputBase from "@mui/material/InputBase";
-import SearchIcon from "@mui/icons-material/Search";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import {DataGrid} from "@mui/x-data-grid";
@@ -99,6 +96,7 @@ const ApproveSettlement = (paymentMethodCategory) => {
     const [openCancel, setOpenCancel] = useState(false);
     const [partnerData, setpartnerData] = useState([]);
     const [partnerClientId, setPartnerClientId] = useState("");
+    const [settlementHistoryId, setSettlementHistoryId] = useState("");
     const [proceedResult, setProceedResult] = useState(null);
     const [settleResult, setSettleResult] = useState(null);
     const [partnerSelectedOption, setPartnerSelectedOption] = useState("None");
@@ -137,6 +135,7 @@ const ApproveSettlement = (paymentMethodCategory) => {
                 paymentMethodCategory, '', navigate, partnerClientId);
             if (data && data.payments) {
                 setTransactionData(data.payments);
+                setSettlementHistoryId(data.settlementHistoryId);
                 setSelectedIds(transactionData.map((row) => row.id).join(','));
             } else {
                 setTransactionData([]);
@@ -148,7 +147,8 @@ const ApproveSettlement = (paymentMethodCategory) => {
 
     const sendApproveSettlementData = async () => {
         try {
-            const data = await sendApproveSettlementDataAPI(selectedIds, navigate, partnerClientId);
+            console.log(settlementHistoryId);
+            const data = await sendApproveSettlementDataAPI(selectedIds, navigate, partnerClientId, settlementHistoryId);
             if (data) {
                 return data;
             }
@@ -159,7 +159,7 @@ const ApproveSettlement = (paymentMethodCategory) => {
 
     const sendApproveProceedSettlementData = async () => {
         try {
-            const data = await sendApproveProceedSettlementDataAPI(selectedIds, navigate, partnerClientId, proceedResult.finalAmount);
+            const data = await sendApproveProceedSettlementDataAPI(selectedIds, navigate, partnerClientId, proceedResult.finalAmount, settlementHistoryId);
             if (data) {
                 await fetchTransactionData(fromDate, toDate, navigate, partnerClientId);
                 return data;
@@ -209,7 +209,7 @@ const ApproveSettlement = (paymentMethodCategory) => {
 
     const sendCancelSettlementData = async () => {
         try {
-            const data = await sendCancelSettlementDataAPI(selectedIds, navigate, partnerClientId);
+            const data = await sendCancelSettlementDataAPI(selectedIds, navigate, partnerClientId, settlementHistoryId);
             if (data) {
                 await fetchTransactionData(fromDate, toDate, navigate, partnerClientId);
             }
@@ -223,168 +223,17 @@ const ApproveSettlement = (paymentMethodCategory) => {
         fetchAllPartnerDetails().then(r => {
             setpartnerData(r);
         });
-        handleFetchData();
     }, []);
 
     useEffect(() => {
         setSelectedIds(transactionData.map((row) => row.id).join(','))
     }, [transactionData]);
 
-    const handleFetchData = () => {
-        if (!fromDate) {
-            const currentDate = new Date();
-            const year = currentDate.getFullYear();
-            const month = currentDate.getMonth() + 1; // Months are zero-based
-            setFromDate(`${year}-${month.toString().padStart(2, '0')}-01`);
-        }
-
-        // Check if toDate is empty or undefined
-        if (!toDate) {
-            const currentDate = new Date();
-            const year = currentDate.getFullYear();
-            const month = currentDate.getMonth() + 1; // Months are zero-based
-            const day = currentDate.getDate();
-            setToDate(`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`);
-        }
-        fetchTransactionData(fromDate, toDate, navigate, partnerClientId);
-    };
-
-    const handleSearch = () => {
-        setFromDate('');
-        setToDate('');
-        fetchTransactionData(fromDate, toDate, navigate, partnerClientId);
-    };
-
-    const handleSearchKeyPress = (e) => {
-        if (e.key === 'Enter') {
-            handleSearch();
-        }
-    };
-
-    async function handleCustomDateSelectedOption(value) {
-        const today = new Date();
-        let date1;
-        let date2;
-        switch (value) {
-            case "past_1_day" :
-                const oneDayAgo = new Date(today);
-                oneDayAgo.setDate(today.getDate() - 1);
-                setToDate(today.toISOString().split("T")[0]);
-                setFromDate(oneDayAgo.toISOString().split("T")[0]);
-                date1 = oneDayAgo.toISOString().split("T")[0];
-                date2 = today.toISOString().split("T")[0];
-                fetchTransactionData(date1, date2, navigate, partnerClientId);
-                break;
-            case "past_1_week" :
-                const oneWeekAgo = new Date(today);
-                oneWeekAgo.setDate(today.getDate() - 7);
-                setFromDate(oneWeekAgo.toISOString().split("T")[0]);
-                setToDate(today.toISOString().split("T")[0]);
-                date1 = oneWeekAgo.toISOString().split("T")[0];
-                date2 = today.toISOString().split("T")[0];
-                fetchTransactionData(date1, date2, navigate, partnerClientId);
-                break;
-            case "past_1_month" :
-                const oneMonthAgo = new Date(today);
-                oneMonthAgo.setDate(today.getDate() - 30);
-                setFromDate(oneMonthAgo.toISOString().split("T")[0]);
-                setToDate(today.toISOString().split("T")[0]);
-                date1 = oneMonthAgo.toISOString().split("T")[0];
-                date2 = today.toISOString().split("T")[0];
-                fetchTransactionData(date1, date2, navigate, partnerClientId);
-                break;
-            case "past_mtd" :
-                const currentDate = new Date();
-                const year = currentDate.getFullYear();
-                const month = currentDate.getMonth() + 1; // Months are zero-based
-                setFromDate(`${year}-${month.toString().padStart(2, '0')}-01`);
-                setToDate(today.toISOString().split("T")[0]);
-                date1 = `${year}-${month.toString().padStart(2, '0')}-01`;
-                console.log(date1);
-                date2 = today.toISOString().split("T")[0];
-                fetchTransactionData(date1, date2, navigate, partnerClientId);
-                break;
-            default:
-                return;
-        }
-    }
-
     return (
         <Box m="20px">
             <Header title="Approve Settlement"/>
-
             <Box m="20px">
                 <Grid container spacing={2}>
-                    <Grid item>
-                        <Typography variant="subtitle1" style={{fontSize: "16px"}}>
-                            From:
-                        </Typography>
-                    </Grid>
-                    <Grid item>
-                        <input
-                            type="date"
-                            value={fromDate}
-                            onChange={(e) => setFromDate(e.target.value)}
-                            style={{fontSize: "16px"}}
-                        />
-                    </Grid>
-                    <Grid item>
-                        <Typography variant="subtitle1" style={{fontSize: "16px"}}>
-                            To:
-                        </Typography>
-                    </Grid>
-                    <Grid item>
-                        <input
-                            type="date"
-                            value={toDate}
-                            onChange={(e) => setToDate(e.target.value)}
-                            style={{fontSize: "16px"}}
-                        />
-                    </Grid>
-                    <Grid item>
-                        <Button
-                            variant="contained"
-                            onClick={handleFetchData}
-                            sx={{bgcolor: colors.blueAccent[700], fontSize: "16px", color: colors.grey[100]}}>
-                            Fetch Data
-                        </Button>
-                    </Grid>
-                    <Grid>
-                        <Select
-                            value={customDateSelectedOption}
-                            onChange={(e) => {
-                                setCustomDateSelectedOption(e.target.value)
-                                handleCustomDateSelectedOption(e.target.value)
-                            }}
-                            sx={{ml: 2, color: "#fff"}}
-                        >
-                            <MenuItem value="custom_time">
-                                <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
-                                    Custom Time
-                                </Typography>
-                            </MenuItem>
-                            <MenuItem value="past_1_day">
-                                <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
-                                    Past 1 Day
-                                </Typography>
-                            </MenuItem>
-                            <MenuItem value="past_1_week">
-                                <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
-                                    Past 1 Week
-                                </Typography>
-                            </MenuItem>
-                            <MenuItem value="past_1_month">
-                                <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
-                                    Past 1 Month
-                                </Typography>
-                            </MenuItem>
-                            <MenuItem value="past_mtd">
-                                <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
-                                    MTD(Month Till Date)
-                                </Typography>
-                            </MenuItem>
-                        </Select>
-                    </Grid>
                     {partnerData && <Grid>
                         <Select
                             value={partnerSelectedOption}
@@ -409,47 +258,6 @@ const ApproveSettlement = (paymentMethodCategory) => {
                         </Select>
                     </Grid>}
                 </Grid>
-            </Box>
-
-            <Box
-                display="flex"
-                backgroundColor={colors.primary[400]}
-                borderRadius="3px"
-            >
-                {/* Dropdown component */}
-                <Select
-                    value={selectedOption}
-                    onChange={(e) => setSelectedOption(e.target.value)}
-                    sx={{ml: 2, color: "#fff"}}
-                >
-                    <MenuItem value="transactionId">
-                        <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
-                            Transaction ID
-                        </Typography>
-                    </MenuItem>
-                    <MenuItem value="mobileNumber">
-                        <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
-                            Mobile Number
-                        </Typography>
-                    </MenuItem>
-                    <MenuItem value="referenceId">
-                        <Typography sx={{color: colors.grey[100], textAlign: 'center'}}>
-                            Reference ID
-                        </Typography>
-                    </MenuItem>
-                </Select>
-
-                {/* Search input */}
-                <InputBase
-                    sx={{ml: 2, flex: 1}}
-                    placeholder="Search"
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    onKeyPress={handleSearchKeyPress}
-                />
-                <IconButton type="button" sx={{p: 1}} onClick={handleSearch}>
-                    <SearchIcon/>
-                </IconButton>
             </Box>
 
             <Box

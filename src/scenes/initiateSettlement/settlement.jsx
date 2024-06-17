@@ -181,7 +181,6 @@ const InitiateSettlement = (paymentMethodCategory) => {
         fetchAllPartnerDetails().then(r => {
             setpartnerData(r);
         });
-        handleFetchData();
     }, []);
 
     const handleFetchData = () => {

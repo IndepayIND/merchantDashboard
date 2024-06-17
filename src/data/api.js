@@ -365,7 +365,7 @@ export const sendInitiateSettlementDataAPI = async (selectedIds, navigate, partn
     }
 };
 
-export const sendApproveSettlementDataAPI = async (selectedIds, navigate, partnerClientId) => {
+export const sendApproveSettlementDataAPI = async (selectedIds, navigate, partnerClientId, settlementHistoryId) => {
     try {
         const accessToken = Cookies.get('accessToken');
         const response = await fetch(
@@ -378,7 +378,8 @@ export const sendApproveSettlementDataAPI = async (selectedIds, navigate, partne
                 },
                 body: JSON.stringify({
                     paymentIds: selectedIds,
-                    partnerClientId: partnerClientId
+                    partnerClientId: partnerClientId,
+                    settlementHistoryId: settlementHistoryId
                 })
             }
         );
@@ -386,7 +387,7 @@ export const sendApproveSettlementDataAPI = async (selectedIds, navigate, partne
             const accessToken = await refreshToken();
             // Make a new request with the refreshed access token
             if (accessToken) {
-                return await sendApproveSettlementDataAPI(selectedIds, navigate);
+                return await sendApproveSettlementDataAPI(selectedIds, navigate, settlementHistoryId);
             } else {
                 deleteAllCookies();
                 navigate('/login');
@@ -403,7 +404,7 @@ export const sendApproveSettlementDataAPI = async (selectedIds, navigate, partne
     }
 };
 
-export const sendApproveProceedSettlementDataAPI = async (selectedIds, navigate, partnerClientId, finalAmount) => {
+export const sendApproveProceedSettlementDataAPI = async (selectedIds, navigate, partnerClientId, finalAmount, settlementHistoryId) => {
     try {
         const accessToken = Cookies.get('accessToken');
         const response = await fetch(
@@ -417,6 +418,7 @@ export const sendApproveProceedSettlementDataAPI = async (selectedIds, navigate,
                 body: JSON.stringify({
                     paymentIds: selectedIds,
                     partnerClientId: partnerClientId,
+                    settlementHistoryId: settlementHistoryId,
                     finalAmount: finalAmount
                 })
             }
@@ -425,7 +427,7 @@ export const sendApproveProceedSettlementDataAPI = async (selectedIds, navigate,
             const accessToken = await refreshToken();
             // Make a new request with the refreshed access token
             if (accessToken) {
-                return await sendApproveSettlementDataAPI(selectedIds, navigate);
+                return await sendApproveProceedSettlementDataAPI(selectedIds, navigate);
             } else {
                 deleteAllCookies();
                 navigate('/login');
@@ -440,7 +442,7 @@ export const sendApproveProceedSettlementDataAPI = async (selectedIds, navigate,
     }
 };
 
-export const sendCancelSettlementDataAPI = async (selectedIds, navigate, partnerClientId) => {
+export const sendCancelSettlementDataAPI = async (selectedIds, navigate, partnerClientId, settlementHistoryId) => {
     try {
         const accessToken = Cookies.get('accessToken');
         const response = await fetch(
@@ -453,7 +455,7 @@ export const sendCancelSettlementDataAPI = async (selectedIds, navigate, partner
                 },
                 body: JSON.stringify({
                     paymentIds: selectedIds,
-
+                    settlementHistoryId: settlementHistoryId,
                     partnerClientId: partnerClientId
                 })
             }

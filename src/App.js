@@ -99,7 +99,7 @@ function App() {
                   </>
               )}
 
-              {containsSubstring(dashboardRoute, RouteEnum.checkerRoute) && (
+              {containsSubstring(dashboardRoute, RouteEnum.approverRoute) && (
                   <>
                     <Route path="/settlement/approve-settlement" element={<ApproveSettlement/>}/>
                   </>
